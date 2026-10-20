@@ -3,11 +3,11 @@ use serde::{Deserialize, Serialize};
 use std::path::PathBuf;
 use url::Url;
 
-/// Yig'ish paytida beriladigan sukut server (CI: vars.EDUX_SERVER), bo'lmasa app.edux.uz.
+/// Yig'ish paytida beriladigan sukut server (CI: vars.EDUX_SERVER), bo'lmasa edux.kuchkarov.uz.
 pub fn default_server() -> String {
     match option_env!("EDUX_SERVER") {
         Some(s) if !s.trim().is_empty() => normalize_server(s, None).unwrap_or_else(|_| s.trim().to_string()),
-        _ => "https://app.edux.uz".to_string(),
+        _ => "https://edux.kuchkarov.uz".to_string(),
     }
 }
 

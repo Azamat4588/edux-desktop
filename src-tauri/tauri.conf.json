@@ -18,7 +18,7 @@
     "active": true,
     "targets": ["nsis", "msi", "app", "dmg", "appimage", "deb"],
     "publisher": "EduX",
-    "homepage": "https://edux.uz",
+    "homepage": "https://edux.kuchkarov.uz",
     "category": "Education",
     "shortDescription": "EduX — ta'lim markazi, maktab va test tizimi",
     "longDescription": "EduX tizimining kompyuter ilovasi: platforma egasi, direktor, administrator, kassir, marketolog, o'qituvchi, o'quvchi va ota-ona uchun.",

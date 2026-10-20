@@ -2,7 +2,7 @@
 # Linux (.AppImage + .deb). Har push'dan keyin o'rnatuvchilar o'zgarmas nomlar bilan «desktop-latest»
 # relizga qo'yiladi; versiya (package.json) o'zgarganda «v<versiya>» relizi ham yaratiladi.
 # Sozlamalar (Settings → Secrets and variables → Actions):
-#   vars.EDUX_SERVER — ilova sukut bo'yicha ochadigan server (bo'lmasa https://app.edux.uz)
+#   vars.EDUX_SERVER — ilova sukut bo'yicha ochadigan server (bo'lmasa https://edux.kuchkarov.uz)
 #   Ixtiyoriy imzo (yo'q bo'lsa ilova imzosiz yig'iladi, yig'ish to'xtamaydi):
 #   secrets.WINDOWS_CERT_PFX_BASE64, WINDOWS_CERT_PASSWORD — Windows kod imzosi sertifikati (.pfx, base64)
 #   secrets.APPLE_CERTIFICATE, APPLE_CERTIFICATE_PASSWORD, APPLE_SIGNING_IDENTITY — macOS Developer ID imzosi
@@ -23,7 +23,7 @@ permissions:
   contents: write
 
 env:
-  EDUX_SERVER: ${{ vars.EDUX_SERVER || 'https://app.edux.uz' }}
+  EDUX_SERVER: ${{ vars.EDUX_SERVER || 'https://edux.kuchkarov.uz' }}
 
 jobs:
   build:

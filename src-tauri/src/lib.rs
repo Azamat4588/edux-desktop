@@ -759,7 +759,10 @@ fn notify_cmd(app: AppHandle, webview: Webview, title: String, body: Option<Stri
 }
 
 #[tauri::command]
-fn print_page(window: WebviewWindow) -> Result<(), String> {
+fn print_page(app: AppHandle, webview: Webview, window: WebviewWindow) -> Result<(), String> {
+    if !trusted(&app, &webview) {
+        return Err("forbidden".into());
+    }
     window.print().map_err(|e| e.to_string())
 }
 

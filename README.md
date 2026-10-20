@@ -12,7 +12,7 @@ Linux — WebKitGTK). O'rnatuvchi hajmi kichik (3–12 MB), alohida brauzer qo's
 - **Manzil so'ralmaydi.** Ilova ochilishi bilan asosiy serverning kirish sahifasi (`<server>/login`) ochiladi —
   foydalanuvchi faqat telefon raqami va parolini kiritadi. Asosiy server yig'ish paytida beriladi (pastda «Asosiy server»).
 - **O'z serveri bo'lgan mijozlar uchun (kengaytirilgan):** menyu → **EduX → Kengaytirilgan → Server manzili…** —
-  subdomen (`markaz` → `https://markaz.edux.uz`), domen (`maktab.uz`) yoki IP (`192.168.1.10:8000`);
+  subdomen (`markaz` → `https://markaz.<asosiy server domeni>`), domen (`maktab.uz`) yoki IP (`192.168.1.10:8000`);
   saqlashdan oldin `GET <server>/api/v1/auth/options` bilan tekshiriladi. «Asosiy serverga qaytish» tugmasi bor.
 - **Til:** o'zbekcha / ruscha / inglizcha — kompyuter tiliga qarab, sozlamalarda qo'lda tanlash mumkin.
 - **Oyna** o'lchami va joyi eslab qolinadi; ilova **bitta nusxada** ishlaydi (qayta ochilsa, mavjud oyna oldinga chiqadi).
@@ -73,6 +73,7 @@ Har relizda `SHA256SUMS.txt` bor.
 - **Linux AppImage:** `chmod +x EduX-linux-x86_64.AppImage && ./EduX-linux-x86_64.AppImage`
   (Ubuntu 22.04+ da `libfuse2` kerak bo'lishi mumkin: `sudo apt install libfuse2`).
   **.deb:** `sudo apt install ./EduX-linux-amd64.deb` — menyuda «EduX» paydo bo'ladi.
+  Paket nomi `edux` (o'chirish: `sudo apt remove edux`).
 
 ## Imzo (ixtiyoriy) — GitHub Secrets
 
@@ -110,10 +111,10 @@ Hozir ilova faqat banner ko'rsatadi. Tauri updater'ni yoqish uchun:
 ## Asosiy server (domen tayyor bo'lganda)
 
 Ilova ochadigan server **yig'ish paytida** beriladi: repozitoriy o'zgaruvchisi `EDUX_SERVER`.
-Bo'lmasa — `https://app.edux.uz`.
+Bo'lmasa — `https://edux.kuchkarov.uz`.
 
 1. GitHub → **Azamat4588/edux-desktop → Settings → Secrets and variables → Actions → Variables → New repository variable**:
-   nomi `EDUX_SERVER`, qiymati masalan `https://app.edux.uz` (oxirida `/` siz).
+   nomi `EDUX_SERVER`, qiymati masalan `https://edux.kuchkarov.uz` (oxirida `/` siz).
 2. **Actions → Desktop → Run workflow** (yoki `main` ga istalgan push) — yangi o'rnatuvchilar shu server bilan chiqadi.
 
 Foydalanuvchi o'zi «Kengaytirilgan → Server manzili…» orqali boshqa server tanlamagan bo'lsa, ilova doim yig'ishdagi
@@ -131,7 +132,7 @@ Talablar: Node.js 20+, Rust (stable), va OS kutubxonalari:
 ```bash
 npm ci
 npx tauri dev                       # ishlab chiqish rejimi
-EDUX_SERVER=https://app.edux.uz npx tauri build    # o'rnatuvchilar: src-tauri/target/release/bundle/
+EDUX_SERVER=https://edux.kuchkarov.uz npx tauri build    # o'rnatuvchilar: src-tauri/target/release/bundle/
 cd src-tauri && cargo test          # birlik testlari (manzil, versiya taqqoslash)
 ```
 

@@ -1,0 +1,16 @@
+{
+  "$schema": "../gen/schemas/remote-schema.json",
+  "identifier": "server",
+  "description": "EduX server sahifasi (veb ilova). Oyna faqat tanlangan serverni ochadi (boshqa saytlar brauzerda), buyruqlar ham manbani qayta tekshiradi.",
+  "windows": ["main", "popup-*"],
+  "remote": {
+    "urls": ["https://*", "https://*:*", "http://*", "http://*:*"]
+  },
+  "permissions": [
+    "allow-open-external",
+    "allow-open-window",
+    "allow-save-file",
+    "allow-notify-cmd",
+    "allow-print-page"
+  ]
+}

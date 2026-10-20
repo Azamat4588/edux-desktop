@@ -1,0 +1,15 @@
+{
+  "name": "edux-desktop",
+  "private": true,
+  "version": "1.0.0",
+  "description": "EduX — Windows, macOS va Linux uchun kompyuter ilovasi",
+  "scripts": {
+    "tauri": "tauri",
+    "dev": "tauri dev",
+    "build": "tauri build",
+    "icons": "tauri icon src-tauri/icons/source.png"
+  },
+  "devDependencies": {
+    "@tauri-apps/cli": "2.12.3"
+  }
+}

@@ -1,0 +1,11 @@
+# Automatically generated - DO NOT EDIT!
+
+[[permission]]
+identifier = "allow-notify-cmd"
+description = "Enables the notify_cmd command without any pre-configured scope."
+commands.allow = ["notify_cmd"]
+
+[[permission]]
+identifier = "deny-notify-cmd"
+description = "Denies the notify_cmd command without any pre-configured scope."
+commands.deny = ["notify_cmd"]

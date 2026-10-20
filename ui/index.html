@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="uz">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>EduX</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="card" id="card">
+    <img class="logo" src="logo.png" alt="EduX" width="72" height="72">
+
+    <!-- Ulanish -->
+    <section id="view-boot" class="view">
+      <div class="spinner" aria-hidden="true"></div>
+      <p class="muted" data-t="connecting"></p>
+      <p class="server-line" id="boot-server"></p>
+    </section>
+
+    <!-- Server manzili va til -->
+    <section id="view-settings" class="view" hidden>
+      <h1 data-t="settings_title"></h1>
+      <p class="muted" data-t="settings_hint"></p>
+      <form id="settings-form" novalidate>
+        <label for="server" data-t="server_label"></label>
+        <input id="server" name="server" type="text" autocomplete="url" spellcheck="false" autocapitalize="off" required>
+        <p class="hint" data-t="server_examples"></p>
+        <label for="lang" data-t="lang_label"></label>
+        <select id="lang" name="lang">
+          <option value="" data-t="lang_auto"></option>
+          <option value="uz">O'zbekcha</option>
+          <option value="ru">Русский</option>
+          <option value="en">English</option>
+        </select>
+        <p class="error" id="settings-error" role="alert" hidden></p>
+        <div class="actions">
+          <button type="button" class="secondary" id="cancel" data-t="cancel" hidden></button>
+          <button type="submit" class="primary" id="save"><span data-t="continue"></span></button>
+        </div>
+      </form>
+    </section>
+
+    <!-- Server ochilmadi -->
+    <section id="view-error" class="view" hidden>
+      <div class="error-icon" aria-hidden="true">!</div>
+      <h1 id="error-title"></h1>
+      <p class="muted" id="error-text"></p>
+      <p class="server-line" id="error-server"></p>
+      <div class="actions center">
+        <button type="button" class="secondary" id="change" data-t="change_server"></button>
+        <button type="button" class="primary" id="retry" data-t="retry"></button>
+      </div>
+    </section>
+
+    <footer class="foot" id="foot"></footer>
+  </main>
+  <script src="app.js"></script>
+</body>
+</html>

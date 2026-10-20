@@ -1,0 +1,62 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "EduX",
+  "mainBinaryName": "edux",
+  "version": "../package.json",
+  "identifier": "uz.edux.desktop",
+  "build": {
+    "frontendDist": "../ui"
+  },
+  "app": {
+    "windows": [],
+    "withGlobalTauri": false,
+    "security": {
+      "csp": null
+    }
+  },
+  "bundle": {
+    "active": true,
+    "targets": ["nsis", "msi", "app", "dmg", "appimage", "deb"],
+    "publisher": "EduX",
+    "homepage": "https://edux.uz",
+    "category": "Education",
+    "shortDescription": "EduX — ta'lim markazi, maktab va test tizimi",
+    "longDescription": "EduX tizimining kompyuter ilovasi: platforma egasi, direktor, administrator, kassir, marketolog, o'qituvchi, o'quvchi va ota-ona uchun.",
+    "copyright": "© EduX",
+    "icon": [
+      "icons/32x32.png",
+      "icons/128x128.png",
+      "icons/128x128@2x.png",
+      "icons/icon.icns",
+      "icons/icon.ico"
+    ],
+    "windows": {
+      "webviewInstallMode": { "type": "downloadBootstrapper", "silent": true },
+      "nsis": {
+        "installMode": "currentUser",
+        "languages": ["English", "Russian"],
+        "displayLanguageSelector": false
+      },
+      "wix": {
+        "language": "en-US"
+      }
+    },
+    "macOS": {
+      "minimumSystemVersion": "10.15",
+      "signingIdentity": "-",
+      "entitlements": "Entitlements.plist"
+    },
+    "linux": {
+      "deb": {
+        "section": "education"
+      }
+    }
+  },
+  "plugins": {
+    "deep-link": {
+      "desktop": {
+        "schemes": ["edux"]
+      }
+    }
+  }
+}

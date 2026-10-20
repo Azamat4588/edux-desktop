@@ -76,7 +76,7 @@
     function applyTexts() {
         document.documentElement.lang = lang;
         document.querySelectorAll('[data-t]').forEach((el) => { el.textContent = tr(el.dataset.t); });
-        $('foot').textContent = settings ? `EduX ${settings.version} · ${tr('version')}` : '';
+        $('foot').textContent = settings ? `${tr('version')}: ${settings.version}` : '';
     }
 
     function show(view) {

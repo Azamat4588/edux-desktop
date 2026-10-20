@@ -25,10 +25,14 @@ serde_json = "1"
 ureq = { version = "2", features = ["json"] }
 url = "2"
 sys-locale = "0.3"
-rfd = { version = "0.15", default-features = false, features = ["gtk3"] }
 
+[target.'cfg(not(target_os = "linux"))'.dependencies]
+rfd = { version = "0.15", default-features = false }
+
+# Linux: dialoglar to'g'ridan-to'g'ri GTK orqali (rfd o'z GTK oqimini ochadi va Tauri bilan to'qnashadi).
 [target.'cfg(target_os = "linux")'.dependencies]
 webkit2gtk = "2.0"
+gtk = "0.18"
 
 [profile.release]
 codegen-units = 1

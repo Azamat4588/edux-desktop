@@ -122,14 +122,40 @@ fn sanitize_name(name: &str) -> String {
 /// Native «Saqlash» oynasi. Faqat asosiy (UI) oqimda chaqiriladi.
 fn save_dialog_on_main(app: &AppHandle, name: &str) -> Option<PathBuf> {
     let name = sanitize_name(name);
-    let mut dialog = rfd::FileDialog::new().set_title(t(&app.state::<AppState>().lang(), "save.title")).set_file_name(&name);
-    if let Some(dir) = default_dir(app) {
-        dialog = dialog.set_directory(dir);
+    let title = t(&app.state::<AppState>().lang(), "save.title");
+    let dir = default_dir(app);
+    #[cfg(target_os = "linux")]
+    {
+        use gtk::prelude::*;
+        let parent = main_window(app).and_then(|w| w.gtk_window().ok());
+        let dialog = gtk::FileChooserDialog::with_buttons(
+            Some(title.as_str()),
+            parent.as_ref(),
+            gtk::FileChooserAction::Save,
+            &[("_Cancel", gtk::ResponseType::Cancel), ("_Save", gtk::ResponseType::Accept)],
+        );
+        dialog.set_do_overwrite_confirmation(true);
+        dialog.set_modal(true);
+        if let Some(dir) = dir {
+            let _ = dialog.set_current_folder(dir);
+        }
+        dialog.set_current_name(&name);
+        let response = dialog.run();
+        let path = if response == gtk::ResponseType::Accept { dialog.filename() } else { None };
+        dialog.close();
+        path
     }
-    if let Some(ext) = std::path::Path::new(&name).extension().and_then(|e| e.to_str()) {
-        dialog = dialog.add_filter(ext.to_uppercase(), &[ext]);
+    #[cfg(not(target_os = "linux"))]
+    {
+        let mut dialog = rfd::FileDialog::new().set_title(&title).set_file_name(&name);
+        if let Some(dir) = dir {
+            dialog = dialog.set_directory(dir);
+        }
+        if let Some(ext) = std::path::Path::new(&name).extension().and_then(|e| e.to_str()) {
+            dialog = dialog.add_filter(ext.to_uppercase(), &[ext]);
+        }
+        dialog.save_file()
     }
-    dialog.save_file()
 }
 
 /// Ishchi oqimdan: dialog asosiy oqimda ochiladi, natija kutiladi.
@@ -149,13 +175,33 @@ fn notify(app: &AppHandle, title: &str, body: &str) {
 }
 
 fn message_on_main(app: &AppHandle, title: String, text: String) {
+    let handle = app.clone();
     let _ = app.run_on_main_thread(move || {
-        rfd::MessageDialog::new()
-            .set_level(rfd::MessageLevel::Info)
-            .set_title(&title)
-            .set_description(&text)
-            .set_buttons(rfd::MessageButtons::Ok)
-            .show();
+        #[cfg(target_os = "linux")]
+        {
+            use gtk::prelude::*;
+            let parent = main_window(&handle).and_then(|w| w.gtk_window().ok());
+            let dialog = gtk::MessageDialog::new(
+                parent.as_ref(),
+                gtk::DialogFlags::MODAL,
+                gtk::MessageType::Info,
+                gtk::ButtonsType::Ok,
+                &text,
+            );
+            dialog.set_title(&title);
+            dialog.run();
+            dialog.close();
+        }
+        #[cfg(not(target_os = "linux"))]
+        {
+            let _ = &handle;
+            rfd::MessageDialog::new()
+                .set_level(rfd::MessageLevel::Info)
+                .set_title(&title)
+                .set_description(&text)
+                .set_buttons(rfd::MessageButtons::Ok)
+                .show();
+        }
     });
 }
 
@@ -303,7 +349,7 @@ fn open_server(app: &AppHandle, window: &WebviewWindow) -> Result<(), String> {
     let Some(server) = state.server() else { return Err("setup".into()) };
     match net::check_options(&server, 12) {
         Ok(_) => {
-            let path = state.pending_path.lock().unwrap().take().unwrap_or_else(|| "/".into());
+            let path = state.pending_path.lock().unwrap().take().unwrap_or_else(|| "/login".into());
             let url = Url::parse(&format!("{server}{path}")).map_err(|e| e.to_string())?;
             *state.last_error.lock().unwrap() = None;
             window.navigate(url).map_err(|e| e.to_string())
@@ -769,7 +815,7 @@ pub fn run() {
             });
 
             refresh_menu(&handle);
-            build_window(&handle, "main", WebviewUrl::App("index.html#boot".into()), "EduX")?;
+            build_window(&handle, "main", WebviewUrl::App("index.html".into()), "EduX")?;
 
             // Yangilanishlar: ishga tushganda (biroz kutib) va har 6 soatda.
             let upd = handle.clone();

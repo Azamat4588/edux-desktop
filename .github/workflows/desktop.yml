@@ -1,0 +1,183 @@
+# EduX kompyuter ilovasi: Windows (.exe o'rnatuvchi + .msi), macOS (universal .dmg — Intel va Apple Silicon),
+# Linux (.AppImage + .deb). Har push'dan keyin o'rnatuvchilar o'zgarmas nomlar bilan «desktop-latest»
+# relizga qo'yiladi; versiya (package.json) o'zgarganda «v<versiya>» relizi ham yaratiladi.
+# Sozlamalar (Settings → Secrets and variables → Actions):
+#   vars.EDUX_SERVER — ilova sukut bo'yicha ochadigan server (bo'lmasa https://app.edux.uz)
+#   Ixtiyoriy imzo (yo'q bo'lsa ilova imzosiz yig'iladi, yig'ish to'xtamaydi):
+#   secrets.WINDOWS_CERT_PFX_BASE64, WINDOWS_CERT_PASSWORD — Windows kod imzosi sertifikati (.pfx, base64)
+#   secrets.APPLE_CERTIFICATE, APPLE_CERTIFICATE_PASSWORD, APPLE_SIGNING_IDENTITY — macOS Developer ID imzosi
+#   secrets.APPLE_ID, APPLE_PASSWORD, APPLE_TEAM_ID — macOS notarizatsiya
+name: Desktop
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: desktop-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+
+env:
+  EDUX_SERVER: ${{ vars.EDUX_SERVER || 'https://app.edux.uz' }}
+
+jobs:
+  build:
+    name: ${{ matrix.name }}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 60
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: windows
+            os: windows-latest
+            args: --bundles nsis,msi
+          - name: macos
+            os: macos-latest
+            args: --target universal-apple-darwin --bundles app,dmg
+            rust_targets: aarch64-apple-darwin,x86_64-apple-darwin
+          - name: linux
+            os: ubuntu-22.04
+            args: --bundles appimage,deb
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: npm
+
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.rust_targets }}
+
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: src-tauri -> target
+          key: ${{ matrix.name }}
+
+      - name: Linux kutubxonalari
+        if: matrix.name == 'linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libwebkit2gtk-4.1-dev libgtk-3-dev libayatana-appindicator3-dev librsvg2-dev patchelf libsoup-3.0-dev xdg-utils
+
+      - name: npm
+        run: npm ci
+
+      - name: Testlar
+        if: matrix.name == 'linux'
+        working-directory: src-tauri
+        run: cargo test --locked
+
+      - name: Windows imzosi (ixtiyoriy)
+        if: matrix.name == 'windows'
+        shell: pwsh
+        env:
+          PFX: ${{ secrets.WINDOWS_CERT_PFX_BASE64 }}
+          PFX_PASSWORD: ${{ secrets.WINDOWS_CERT_PASSWORD }}
+        run: |
+          if (-not $env:PFX) { Write-Output "::notice::Windows sertifikati yo'q — o'rnatuvchi imzosiz (SmartScreen ogohlantiradi)"; exit 0 }
+          [IO.File]::WriteAllBytes("$env:RUNNER_TEMP\cert.pfx", [Convert]::FromBase64String($env:PFX))
+          $password = ConvertTo-SecureString -String $env:PFX_PASSWORD -Force -AsPlainText
+          $cert = Import-PfxCertificate -FilePath "$env:RUNNER_TEMP\cert.pfx" -CertStoreLocation Cert:\CurrentUser\My -Password $password
+          $config = @{ bundle = @{ windows = @{ certificateThumbprint = $cert.Thumbprint; digestAlgorithm = 'sha256'; timestampUrl = 'http://timestamp.digicert.com' } } } | ConvertTo-Json -Depth 5
+          Set-Content -Path src-tauri/tauri.signing.json -Value $config
+          "TAURI_EXTRA_ARGS=--config src-tauri/tauri.signing.json" | Out-File -FilePath $env:GITHUB_ENV -Append
+          Write-Output "::notice::Windows o'rnatuvchisi imzolanadi ($($cert.Subject))"
+
+      - name: Yig'ish
+        shell: bash
+        env:
+          S_APPLE_CERTIFICATE: ${{ secrets.APPLE_CERTIFICATE }}
+          S_APPLE_CERTIFICATE_PASSWORD: ${{ secrets.APPLE_CERTIFICATE_PASSWORD }}
+          S_APPLE_SIGNING_IDENTITY: ${{ secrets.APPLE_SIGNING_IDENTITY }}
+          S_APPLE_ID: ${{ secrets.APPLE_ID }}
+          S_APPLE_PASSWORD: ${{ secrets.APPLE_PASSWORD }}
+          S_APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+        run: |
+          set -o pipefail
+          if [ "${{ matrix.name }}" = "macos" ]; then
+            if [ -n "$S_APPLE_CERTIFICATE" ] && [ -n "$S_APPLE_SIGNING_IDENTITY" ]; then
+              export APPLE_CERTIFICATE="$S_APPLE_CERTIFICATE" APPLE_CERTIFICATE_PASSWORD="$S_APPLE_CERTIFICATE_PASSWORD" APPLE_SIGNING_IDENTITY="$S_APPLE_SIGNING_IDENTITY"
+              echo "::notice::macOS ilovasi Developer ID bilan imzolanadi"
+              if [ -n "$S_APPLE_ID" ] && [ -n "$S_APPLE_PASSWORD" ] && [ -n "$S_APPLE_TEAM_ID" ]; then
+                export APPLE_ID="$S_APPLE_ID" APPLE_PASSWORD="$S_APPLE_PASSWORD" APPLE_TEAM_ID="$S_APPLE_TEAM_ID"
+                echo "::notice::macOS notarizatsiyasi yoqilgan"
+              fi
+            else
+              echo "::notice::Apple sertifikati yo'q — ad-hoc imzo (birinchi ochishda: o'ng tugma → Open)"
+            fi
+          fi
+          echo "Server: $EDUX_SERVER"
+          npx tauri build ${{ matrix.args }} $TAURI_EXTRA_ARGS 2>&1 | tee build.log
+
+      - name: O'zgarmas nomlar
+        shell: bash
+        run: |
+          set -e
+          mkdir -p dist
+          T=src-tauri/target
+          case "${{ matrix.name }}" in
+            windows)
+              cp "$(ls $T/release/bundle/nsis/*-setup.exe | head -1)" dist/EduX-Setup-x64.exe
+              cp "$(ls $T/release/bundle/msi/*.msi | head -1)" dist/EduX-x64.msi ;;
+            macos)
+              cp "$(ls $T/universal-apple-darwin/release/bundle/dmg/*.dmg | head -1)" dist/EduX-macOS-universal.dmg ;;
+            linux)
+              cp "$(ls $T/release/bundle/appimage/*.AppImage | head -1)" dist/EduX-linux-x86_64.AppImage
+              cp "$(ls $T/release/bundle/deb/*.deb | head -1)" dist/EduX-linux-amd64.deb ;;
+          esac
+          ls -la dist
+
+      - name: Xato tafsilotlari
+        if: failure()
+        shell: bash
+        run: |
+          [ -f build.log ] || exit 0
+          grep -nE "(error|Error|ERROR|failed|Failed|panicked)" build.log | grep -v "warning" | head -15 | while IFS= read -r line; do
+            echo "::error title=${{ matrix.name }} build::$(echo "$line" | cut -c1-900)"
+          done
+          tail -n 25 build.log | while IFS= read -r line; do echo "::warning title=${{ matrix.name }} tail::$(echo "$line" | cut -c1-500)"; done
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: edux-desktop-${{ matrix.name }}
+          path: dist/*
+          if-no-files-found: error
+
+  release:
+    needs: build
+    if: github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/download-artifact@v4
+        with:
+          path: dist
+          merge-multiple: true
+
+      - name: Relizlar
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -e
+          cd dist
+          sha256sum * > SHA256SUMS.txt
+          ls -la
+          version=$(node -p "require('../package.json').version")
+          notes="EduX kompyuter ilovasi $version (yig'ish ${{ github.run_number }}, ${GITHUB_SHA::7}). Server: $EDUX_SERVER
+          Windows: EduX-Setup-x64.exe (yoki EduX-x64.msi) · macOS: EduX-macOS-universal.dmg (Intel va Apple Silicon) · Linux: EduX-linux-x86_64.AppImage yoki EduX-linux-amd64.deb"
+          gh release delete desktop-latest --yes --cleanup-tag || true
+          gh release create desktop-latest * --prerelease --target "$GITHUB_SHA" \
+            --title "EduX Desktop $version (oxirgi yig'ish)" --notes "$notes"
+          if ! gh release view "v$version" >/dev/null 2>&1; then
+            gh release create "v$version" * --target "$GITHUB_SHA" --latest \
+              --title "EduX Desktop $version" --notes "$notes"
+          fi

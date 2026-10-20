@@ -9,9 +9,11 @@ Linux — WebKitGTK). O'rnatuvchi hajmi kichik (3–12 MB), alohida brauzer qo's
 
 ## Imkoniyatlar
 
-- **Server manzili.** Birinchi ishga tushishda kichik sahifa ochiladi: tashkilot subdomeni (`markaz` → `https://markaz.edux.uz`),
-  to'liq domen (`maktab.uz`) yoki IP (`192.168.1.10:8000`) kiritiladi. Manzil saqlashdan oldin
-  `GET <server>/api/v1/auth/options` bilan tekshiriladi (EduX ekani aniqlanadi). Keyin menyu → **Server manzili…** (Ctrl+Shift+S).
+- **Manzil so'ralmaydi.** Ilova ochilishi bilan asosiy serverning kirish sahifasi (`<server>/login`) ochiladi —
+  foydalanuvchi faqat telefon raqami va parolini kiritadi. Asosiy server yig'ish paytida beriladi (pastda «Asosiy server»).
+- **O'z serveri bo'lgan mijozlar uchun (kengaytirilgan):** menyu → **EduX → Kengaytirilgan → Server manzili…** —
+  subdomen (`markaz` → `https://markaz.edux.uz`), domen (`maktab.uz`) yoki IP (`192.168.1.10:8000`);
+  saqlashdan oldin `GET <server>/api/v1/auth/options` bilan tekshiriladi. «Asosiy serverga qaytish» tugmasi bor.
 - **Til:** o'zbekcha / ruscha / inglizcha — kompyuter tiliga qarab, sozlamalarda qo'lda tanlash mumkin.
 - **Oyna** o'lchami va joyi eslab qolinadi; ilova **bitta nusxada** ishlaydi (qayta ochilsa, mavjud oyna oldinga chiqadi).
 - **Havolalar:** o'sha server (va uning subdomenlari) ilova ichida; boshqa saytlar, `mailto:`, `tel:`, Telegram — tizim brauzeri/ilovasida.
@@ -24,9 +26,9 @@ Linux — WebKitGTK). O'rnatuvchi hajmi kichik (3–12 MB), alohida brauzer qo's
   (macOS birinchi marta tizim ruxsatini so'raydi).
 - **Deep link:** `edux://open?path=/students/5` — ilovani ochadi va shu sahifaga o'tadi (uchala OS da sxema ro'yxatdan o'tadi).
 - **Menyu:** Qayta yuklash (Ctrl+R), Orqaga/Oldinga, Kattalashtirish/Kichiklashtirish/Asl o'lcham (Ctrl +/−/0),
-  To'liq ekran, Server manzili…, Brauzerda ochish, Yordam markazi (F1 → `<server>/help`),
+  To'liq ekran, Kengaytirilgan → Server manzili…, Brauzerda ochish, Yordam markazi (F1 → `<server>/help`),
   Yangilanishni tekshirish, EduX haqida (ilova va server versiyasi).
-- **Internet yo'q / server ochilmasa** — «Qayta urinish» va «Server manzilini o'zgartirish» tugmali sahifa.
+- **Internet yo'q / server ochilmasa** — «Qayta urinish» tugmali sahifa (pastida kichik «Server manzilini o'zgartirish (kengaytirilgan)» havolasi).
 - **Yangi versiya:** ishga tushganda va har 6 soatda `GET <server>/api/v1/public/apps` so'raladi;
   `desktop.windows|macos|linux.version` joriy versiyadan yangi bo'lsa, pastki burchakda «Yangi versiya mavjud» banneri
   chiqadi, «Yuklab olish» havolani brauzerda ochadi. Endpoint yo'q bo'lsa (404) — hech narsa chiqmaydi.
@@ -105,13 +107,18 @@ Hozir ilova faqat banner ko'rsatadi. Tauri updater'ni yoqish uchun:
    `bundle.createUpdaterArtifacts: true`.
 3. CI'da `latest.json` (versiya, imzolar, URL'lar) yaratib relizga qo'shish. Windows/macOS da kod imzosi ham bo'lgani ma'qul.
 
-## Sukut bo'yicha server
+## Asosiy server (domen tayyor bo'lganda)
 
-Ilova birinchi ochilganda maydonda sukut server turadi: yig'ishda `EDUX_SERVER` muhit o'zgaruvchisi
-(CI: repo → Settings → Variables → `EDUX_SERVER`, masalan `https://app.edux.uz`), bo'lmasa `https://app.edux.uz`.
-Foydalanuvchi uni istalgan vaqtda menyudan o'zgartiradi; sozlamalar
-`%APPDATA%\uz.edux.desktop\settings.json` / `~/Library/Application Support/uz.edux.desktop/settings.json` /
-`~/.config/uz.edux.desktop/settings.json` da saqlanadi.
+Ilova ochadigan server **yig'ish paytida** beriladi: repozitoriy o'zgaruvchisi `EDUX_SERVER`.
+Bo'lmasa — `https://app.edux.uz`.
+
+1. GitHub → **Azamat4588/edux-desktop → Settings → Secrets and variables → Actions → Variables → New repository variable**:
+   nomi `EDUX_SERVER`, qiymati masalan `https://app.edux.uz` (oxirida `/` siz).
+2. **Actions → Desktop → Run workflow** (yoki `main` ga istalgan push) — yangi o'rnatuvchilar shu server bilan chiqadi.
+
+Foydalanuvchi o'zi «Kengaytirilgan → Server manzili…» orqali boshqa server tanlamagan bo'lsa, ilova doim yig'ishdagi
+asosiy serverga ergashadi. Sozlamalar fayli: `%APPDATA%\uz.edux.desktop\settings.json` /
+`~/Library/Application Support/uz.edux.desktop/settings.json` / `~/.config/uz.edux.desktop/settings.json`.
 
 ## Mahalliy yig'ish
 
@@ -133,7 +140,7 @@ Belgilar (ikonka) `src-tauri/icons/source.png` dan (mobil ilova logotipi asosida
 ## Tuzilishi
 
 ```
-ui/                     ilovaning o'z sahifasi: ulanish, server manzili, xato (uz/ru/en)
+ui/                     ilovaning o'z sahifasi: ulanish, xato, kengaytirilgan server manzili (uz/ru/en)
 src-tauri/src/lib.rs    oyna, menyu, navigatsiya, yuklab olish, ruxsatlar, deep link, yangilanishlar
 src-tauri/src/inject.js veb ilova ichiga qo'shiladigan ko'prik (blob yuklab olish, print, Notification, window.open)
 src-tauri/src/settings.rs  sozlamalar, manzilni normallashtirish

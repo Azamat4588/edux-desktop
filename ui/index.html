@@ -34,7 +34,9 @@
         </select>
         <p class="error" id="settings-error" role="alert" hidden></p>
         <div class="actions">
-          <button type="button" class="secondary" id="cancel" data-t="cancel" hidden></button>
+          <button type="button" class="link" id="reset" data-t="reset_default" hidden></button>
+          <span class="spacer"></span>
+          <button type="button" class="secondary" id="cancel" data-t="cancel"></button>
           <button type="submit" class="primary" id="save"><span data-t="continue"></span></button>
         </div>
       </form>
@@ -47,9 +49,9 @@
       <p class="muted" id="error-text"></p>
       <p class="server-line" id="error-server"></p>
       <div class="actions center">
-        <button type="button" class="secondary" id="change" data-t="change_server"></button>
         <button type="button" class="primary" id="retry" data-t="retry"></button>
       </div>
+      <button type="button" class="link small" id="change" data-t="change_server"></button>
     </section>
 
     <footer class="foot" id="foot"></footer>

@@ -3,11 +3,18 @@
 pub fn t(lang: &str, key: &str) -> String {
     let (uz, ru, en) = match key {
         "menu.app" => ("EduX", "EduX", "EduX"),
+        "menu.advanced" => ("Kengaytirilgan", "Дополнительно", "Advanced"),
         "menu.server" => ("Server manzili…", "Адрес сервера…", "Server address…"),
         "menu.browser" => ("Brauzerda ochish", "Открыть в браузере", "Open in browser"),
         "menu.about" => ("EduX haqida", "О программе EduX", "About EduX"),
         "menu.quit" => ("Chiqish", "Выход", "Quit"),
         "menu.edit" => ("Tahrirlash", "Правка", "Edit"),
+        "edit.undo" => ("Bekor qilish", "Отменить", "Undo"),
+        "edit.redo" => ("Qaytarish", "Повторить", "Redo"),
+        "edit.cut" => ("Kesib olish", "Вырезать", "Cut"),
+        "edit.copy" => ("Nusxa olish", "Копировать", "Copy"),
+        "edit.paste" => ("Qo'yish", "Вставить", "Paste"),
+        "edit.select_all" => ("Hammasini belgilash", "Выделить всё", "Select all"),
         "menu.view" => ("Ko'rinish", "Вид", "View"),
         "menu.reload" => ("Qayta yuklash", "Обновить", "Reload"),
         "menu.back" => ("Orqaga", "Назад", "Back"),

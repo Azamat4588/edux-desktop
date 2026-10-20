@@ -38,7 +38,8 @@ jobs:
             os: windows-latest
             args: --bundles nsis,msi
           - name: macos
-            os: macos-latest
+            # Private repo'da arm64 (macos-latest) navbati ba'zan olinmaydi — Intel runner universal (Intel + Apple Silicon) yig'adi.
+            os: macos-15-intel
             args: --target universal-apple-darwin --bundles app,dmg
             rust_targets: aarch64-apple-darwin,x86_64-apple-darwin
           - name: linux
@@ -153,7 +154,8 @@ jobs:
 
   release:
     needs: build
-    if: github.event_name != 'pull_request'
+    # Bitta OS yig'ilmasa ham qolganlari «desktop-latest» ga chiqadi; versiyali reliz — faqat hammasi tayyor bo'lsa.
+    if: ${{ !cancelled() && github.event_name != 'pull_request' }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
@@ -177,7 +179,11 @@ jobs:
           gh release delete desktop-latest --yes --cleanup-tag || true
           gh release create desktop-latest * --prerelease --target "$GITHUB_SHA" \
             --title "EduX Desktop $version (oxirgi yig'ish)" --notes "$notes"
-          if ! gh release view "v$version" >/dev/null 2>&1; then
+          complete=true
+          for f in EduX-Setup-x64.exe EduX-x64.msi EduX-macOS-universal.dmg EduX-linux-x86_64.AppImage EduX-linux-amd64.deb; do
+            [ -f "$f" ] || { complete=false; echo "::warning::$f yo'q (shu OS yig'ilmadi)"; }
+          done
+          if $complete && ! gh release view "v$version" >/dev/null 2>&1; then
             gh release create "v$version" * --target "$GITHUB_SHA" --latest \
               --title "EduX Desktop $version" --notes "$notes"
           fi

@@ -3,8 +3,9 @@
     const STR = {
         uz: {
             connecting: 'Serverga ulanmoqda…',
-            settings_title: 'Server manzili',
-            settings_hint: 'Tashkilotingiz EduX manzilini kiriting. Manzil saqlanadi va keyingi safar avtomatik ochiladi.',
+            settings_title: 'Server manzili (kengaytirilgan)',
+            settings_hint: "Faqat EduX'ni o'z serveriga o'rnatgan tashkilotlar uchun. Odatda o'zgartirish shart emas.",
+            reset_default: 'Asosiy serverga qaytish',
             server_label: 'Manzil (subdomen yoki domen)',
             server_examples: 'Masalan: markaz (→ markaz.edux.uz), app.edux.uz yoki maktab.uz',
             lang_label: 'Ilova tili',
@@ -12,7 +13,7 @@
             cancel: 'Bekor qilish',
             continue: 'Davom etish',
             checking: 'Tekshirilmoqda…',
-            change_server: "Server manzilini o'zgartirish",
+            change_server: "Server manzilini o'zgartirish (kengaytirilgan)",
             retry: 'Qayta urinish',
             err_unreachable_title: 'Serverga ulanib bo\'lmadi',
             err_unreachable: 'Internet aloqasini tekshiring yoki birozdan keyin qayta urinib ko\'ring.',
@@ -24,8 +25,9 @@
         },
         ru: {
             connecting: 'Подключение к серверу…',
-            settings_title: 'Адрес сервера',
-            settings_hint: 'Введите адрес EduX вашей организации. Адрес сохранится и в следующий раз откроется автоматически.',
+            settings_title: 'Адрес сервера (дополнительно)',
+            settings_hint: 'Только для организаций, установивших EduX на свой сервер. Обычно менять не нужно.',
+            reset_default: 'Вернуть основной сервер',
             server_label: 'Адрес (поддомен или домен)',
             server_examples: 'Например: markaz (→ markaz.edux.uz), app.edux.uz или maktab.uz',
             lang_label: 'Язык приложения',
@@ -33,7 +35,7 @@
             cancel: 'Отмена',
             continue: 'Продолжить',
             checking: 'Проверка…',
-            change_server: 'Изменить адрес сервера',
+            change_server: 'Изменить адрес сервера (дополнительно)',
             retry: 'Повторить',
             err_unreachable_title: 'Не удалось подключиться к серверу',
             err_unreachable: 'Проверьте подключение к интернету или повторите попытку позже.',
@@ -45,8 +47,9 @@
         },
         en: {
             connecting: 'Connecting to the server…',
-            settings_title: 'Server address',
-            settings_hint: "Enter your organization's EduX address. It will be saved and opened automatically next time.",
+            settings_title: 'Server address (advanced)',
+            settings_hint: 'Only for organizations that host EduX on their own server. Usually there is no need to change it.',
+            reset_default: 'Back to the main server',
             server_label: 'Address (subdomain or domain)',
             server_examples: 'For example: markaz (→ markaz.edux.uz), app.edux.uz or maktab.uz',
             lang_label: 'App language',
@@ -54,7 +57,7 @@
             cancel: 'Cancel',
             continue: 'Continue',
             checking: 'Checking…',
-            change_server: 'Change server address',
+            change_server: 'Change server address (advanced)',
             retry: 'Retry',
             err_unreachable_title: 'Could not connect to the server',
             err_unreachable: 'Check your internet connection or try again a little later.',
@@ -113,7 +116,7 @@
         $('server').value = settings.server || settings.default_server || '';
         $('lang').value = settings.lang || '';
         $('settings-error').hidden = true;
-        $('cancel').hidden = !(cancellable && settings.server);
+        $('reset').hidden = !settings.custom;
         show('settings');
         $('server').focus();
         $('server').select();
@@ -139,7 +142,7 @@
         button.firstElementChild.textContent = tr('checking');
         try {
             const res = await invoke('check_server', { input });
-            await invoke('save_settings', { server: res.url, lang: $('lang').value || null });
+            await invoke('save_settings', { server: res.url, lang: $('lang').value || null, reset: false });
             settings = await invoke('get_settings');
             boot();
         } catch (code) {
@@ -153,6 +156,11 @@
     });
 
     $('cancel').addEventListener('click', () => boot());
+    $('reset').addEventListener('click', async () => {
+        await invoke('save_settings', { server: null, lang: $('lang').value || null, reset: true });
+        settings = await invoke('get_settings');
+        boot();
+    });
     $('retry').addEventListener('click', () => boot());
     $('change').addEventListener('click', () => openSettings(true));
 

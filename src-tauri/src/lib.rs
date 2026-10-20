@@ -51,8 +51,10 @@ impl AppState {
     fn settings(&self) -> Settings {
         self.settings.lock().unwrap().clone()
     }
+    /// Faol server: foydalanuvchi o'zgartirgan bo'lsa — o'sha, aks holda yig'ishdagi sukut server.
+    /// (Birinchi ishga tushishda manzil so'ralmaydi — darhol <server>/login ochiladi.)
     fn server(&self) -> Option<String> {
-        self.settings.lock().unwrap().server.clone()
+        Some(self.settings.lock().unwrap().server.clone().unwrap_or_else(settings::default_server))
     }
     fn lang(&self) -> String {
         self.settings.lock().unwrap().effective_lang()
@@ -461,10 +463,14 @@ fn build_menu(app: &AppHandle) -> tauri::Result<Menu<tauri::Wry>> {
         b.build(app)
     };
 
+    // Kengaytirilgan: o'z serveriga o'rnatgan mijozlar uchun server manzilini o'zgartirish.
+    let advanced = SubmenuBuilder::new(app, l("menu.advanced"))
+        .item(&item("server", "menu.server", None)?)
+        .build()?;
     let app_menu = SubmenuBuilder::new(app, l("menu.app"))
         .item(&item("about", "menu.about", None)?)
         .separator()
-        .item(&item("server", "menu.server", Some("CmdOrCtrl+Shift+S"))?)
+        .item(&advanced)
         .item(&item("browser", "menu.browser", None)?)
         .item(&item("updates", "menu.updates", None)?)
         .separator();
@@ -478,13 +484,13 @@ fn build_menu(app: &AppHandle) -> tauri::Result<Menu<tauri::Wry>> {
 
     // Tahrirlash menyusi macOS da nusxa olish/qo'yish tugmalari ishlashi uchun shart.
     let edit_menu = SubmenuBuilder::new(app, l("menu.edit"))
-        .item(&PredefinedMenuItem::undo(app, None)?)
-        .item(&PredefinedMenuItem::redo(app, None)?)
+        .item(&PredefinedMenuItem::undo(app, Some(&l("edit.undo")))?)
+        .item(&PredefinedMenuItem::redo(app, Some(&l("edit.redo")))?)
         .separator()
-        .item(&PredefinedMenuItem::cut(app, None)?)
-        .item(&PredefinedMenuItem::copy(app, None)?)
-        .item(&PredefinedMenuItem::paste(app, None)?)
-        .item(&PredefinedMenuItem::select_all(app, None)?)
+        .item(&PredefinedMenuItem::cut(app, Some(&l("edit.cut")))?)
+        .item(&PredefinedMenuItem::copy(app, Some(&l("edit.copy")))?)
+        .item(&PredefinedMenuItem::paste(app, Some(&l("edit.paste")))?)
+        .item(&PredefinedMenuItem::select_all(app, Some(&l("edit.select_all")))?)
         .build()?;
 
     let back_accel = if cfg!(target_os = "macos") { "Cmd+[" } else { "Alt+Left" };
@@ -602,6 +608,8 @@ fn on_menu(app: &AppHandle, id: &str) {
 #[derive(serde::Serialize)]
 struct SettingsView {
     server: Option<String>,
+    /// Foydalanuvchi o'z serverini tanlaganmi (aks holda sukut server).
+    custom: bool,
     default_server: String,
     lang: Option<String>,
     effective_lang: String,
@@ -617,7 +625,8 @@ fn get_settings(app: AppHandle) -> SettingsView {
     let s = state.settings();
     let last_error = state.last_error.lock().unwrap().clone();
     SettingsView {
-        server: s.server.clone(),
+        server: state.server(),
+        custom: s.server.is_some(),
         default_server: settings::default_server(),
         lang: s.lang.clone(),
         effective_lang: s.effective_lang(),
@@ -645,7 +654,13 @@ fn check_server(input: String) -> Result<CheckResult, String> {
 }
 
 #[tauri::command]
-fn save_settings(app: AppHandle, webview: Webview, server: Option<String>, lang: Option<String>) -> Result<(), String> {
+fn save_settings(
+    app: AppHandle,
+    webview: Webview,
+    server: Option<String>,
+    lang: Option<String>,
+    reset: Option<bool>,
+) -> Result<(), String> {
     if !webview.url().map(|u| is_local(&u)).unwrap_or(false) {
         return Err("forbidden".into());
     }
@@ -655,9 +670,13 @@ fn save_settings(app: AppHandle, webview: Webview, server: Option<String>, lang:
     };
     let lang = lang.filter(|l| matches!(l.as_str(), "uz" | "ru" | "en"));
     let state = app.state::<AppState>();
+    let reset = reset.unwrap_or(false);
     state.update(|s| {
-        if server.is_some() {
-            s.server = server.clone();
+        if reset {
+            s.server = None;
+        } else if let Some(server) = server.clone() {
+            // Sukut server bilan bir xil bo'lsa — saqlanmaydi (keyingi yig'ishdagi sukut serverga ergashadi).
+            s.server = if server == settings::default_server() { None } else { Some(server) };
         }
         s.lang = lang;
     });
@@ -674,9 +693,6 @@ struct BootResult {
 /// Mahalliy sahifa ochilganda: server tanlangan bo'lsa — tekshirib, unga o'tadi.
 #[tauri::command(async)]
 fn boot(app: AppHandle, window: WebviewWindow) -> Result<BootResult, String> {
-    if app.state::<AppState>().server().is_none() {
-        return Ok(BootResult { setup: true });
-    }
     open_server(&app, &window).map(|_| BootResult { setup: false })
 }
 

@@ -93,3 +93,7 @@ button.secondary:hover { border-color: var(--brand); }
 }
 .foot { color: var(--muted); font-size: 12px; margin-top: 22px; }
 [hidden] { display: none !important; }
+button.link { background: none; border: 0; padding: 6px 4px; color: var(--brand); font-weight: 500; }
+button.link:hover { text-decoration: underline; }
+button.link.small { font-size: 12.5px; margin-top: 14px; color: var(--muted); }
+.spacer { flex: 1; }

@@ -219,12 +219,14 @@ fn message_on_main(app: &AppHandle, title: String, text: String) {
 
 fn init_script(app: &AppHandle) -> String {
     let lang = app.state::<AppState>().lang();
-    let cfg = serde_json::json!({
-        "platform": net::platform_key(),
-        "version": app.package_info().version.to_string(),
-        "offline": t(&lang, "offline.text"),
-    });
+    let cfg = desktop_flag(net::platform_key(), &app.package_info().version.to_string(), &t(&lang, "offline.text"));
     format!("window.__EDUX_DESKTOP__ = {cfg};\n{INJECT}")
+}
+
+/// Veb o'qiydigan belgi (server 1.38, `resources/js/lib/apps.js` → `desktopApp`): `{platform, version}` obyekti —
+/// «Yuklab olish» tugmalari yashiriladi, murojaat kontekstiga `app=desktop` va versiya yoziladi.
+fn desktop_flag(platform: &str, version: &str, offline: &str) -> serde_json::Value {
+    serde_json::json!({ "platform": platform, "version": version, "offline": offline })
 }
 
 fn build_window(app: &AppHandle, label: &str, url: WebviewUrl, title: &str) -> tauri::Result<WebviewWindow> {
@@ -875,4 +877,26 @@ pub fn run() {
         })
         .run(tauri::generate_context!())
         .expect("EduX ilovasini ishga tushirib bo'lmadi");
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn desktop_flag_veb_uchun_obyekt() {
+        let flag = desktop_flag("windows", "1.2.1", "Internet aloqasi yo'q");
+        assert_eq!(flag["platform"], "windows");
+        assert_eq!(flag["version"], "1.2.1");
+        assert!(flag.is_object());
+    }
+
+    #[test]
+    fn murojaat_sorovlariga_aralashmaydi() {
+        // 1.2.1: kontekstni veb o'zi yozadi — fetch/XHR almashtirilmaydi, kontekst ikki marta yozilmaydi.
+        assert!(!INJECT.contains("public\\/support"));
+        assert!(!INJECT.contains("window.fetch ="));
+        assert!(!INJECT.contains("XMLHttpRequest.prototype.send"));
+        assert!(INJECT.contains("window.__EDUX_DESKTOP__"));
+    }
 }

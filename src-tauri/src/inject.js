@@ -1,5 +1,7 @@
 // EduX kompyuter ilovasi: veb ilova (server sahifasi) ichiga qo'shiladigan ko'prik.
 // Yuklab olish (blob/data), chop etish, bildirishnomalar, tashqi havolalar va yangilanish banneri.
+// `window.__EDUX_DESKTOP__` = {platform, version, offline} — veb uni o'qiydi: «Yuklab olish» tugmalari ilova ichida
+// yashiriladi, murojaat kontekstiga ilova versiyasi yoziladi.
 (function () {
     if (window.__eduxDesktop) return;
     window.__eduxDesktop = true;
@@ -283,60 +285,8 @@
         window.Notification = EduxNotification;
     } catch (e) { /* bo'sh */ }
 
-    // Murojaat yuborish (POST /api/v1/public/support, server 1.38): veb sahifa kontekstga app=web yozadi — kompyuter
-    // ilovasida platforma (windows/macos/linux) va ilova versiyasi qo'yiladi. JSON va FormData (rasm bilan) ikkalasi ham.
-    const SUPPORT_PATH = /^\/api\/v1\/public\/support\/?$/;
-    function isSupportPost(method, url) {
-        try {
-            const u = new URL(String(url), location.href);
-            return String(method || 'GET').toUpperCase() === 'POST' && u.origin === location.origin && SUPPORT_PATH.test(u.pathname);
-        } catch (e) {
-            return false;
-        }
-    }
-    function desktopContext() {
-        const ctx = { app: cfg.platform || 'desktop', app_version: cfg.version || '' };
-        Object.keys(ctx).forEach(function (k) { if (!ctx[k]) delete ctx[k]; });
-        return ctx;
-    }
-    function withContext(body) {
-        try {
-            const ctx = desktopContext();
-            if (typeof FormData !== 'undefined' && body instanceof FormData) {
-                Object.keys(ctx).forEach(function (k) { body.set('context[' + k + ']', ctx[k]); });
-                return body;
-            }
-            if (typeof body === 'string' && body.charAt(0) === '{') {
-                const data = JSON.parse(body);
-                data.context = Object.assign({}, data.context && typeof data.context === 'object' ? data.context : {}, ctx);
-                return JSON.stringify(data);
-            }
-        } catch (e) { /* o'zgarmagan holda yuboriladi */ }
-        return body;
-    }
-    window.__eduxSupportBody = withContext;
-    if (window.XMLHttpRequest) {
-        const xhrOpen = XMLHttpRequest.prototype.open;
-        const xhrSend = XMLHttpRequest.prototype.send;
-        XMLHttpRequest.prototype.open = function (method, url) {
-            this.__eduxSupport = isSupportPost(method, url);
-            return xhrOpen.apply(this, arguments);
-        };
-        XMLHttpRequest.prototype.send = function (body) {
-            return xhrSend.call(this, this.__eduxSupport ? withContext(body) : body);
-        };
-    }
-    if (window.fetch) {
-        const nativeFetch = window.fetch;
-        window.fetch = function (input, init) {
-            const url = typeof input === 'string' || input instanceof URL ? input : input && input.url;
-            const method = (init && init.method) || (input && typeof input === 'object' && input.method) || 'GET';
-            if (init && init.body !== undefined && isSupportPost(method, url)) {
-                return nativeFetch.call(this, input, Object.assign({}, init, { body: withContext(init.body) }));
-            }
-            return nativeFetch.apply(this, arguments);
-        };
-    }
+    // Murojaat konteksti (1.2.1): veb (server 1.38) `window.__EDUX_DESKTOP__` dan ilova va versiyani o'zi yozadi —
+    // ilova so'rovlarga aralashmaydi (ilgari fetch/XHR orqali qo'shilardi — endi ikki marta yozilmasin).
 
     // Ilova ichida sahifaga o'tish (deep link, Yordam markazi): Vue Router bo'lsa — SPA ichida.
     window.__eduxNavigate = function (path) {

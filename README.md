@@ -33,9 +33,11 @@ Linux — WebKitGTK). O'rnatuvchi hajmi kichik (3–12 MB), alohida brauzer qo's
   server versiyasi). **Yordam** (1.2.0): «Yordam markazi» (F1 → `<server>/help`), «Ko'p beriladigan savollar»
   (`/yordam/kop-beriladigan-savollar`), «Murojaat yuborish» (`/support?from=<joriy sahifa>`). Server sahifasi ochiq
   bo'lmasa (aloqa yo'q) — ulangach shu sahifaga o'tiladi.
-- **Murojaat konteksti** (1.2.0, server 1.38): `POST /api/v1/public/support` ga ilova `context[app]` =
-  `windows|macos|linux` va `context[app_version]` qo'shadi (JSON va rasm bilan yuborilgan FormData) — veb sahifa
-  o'zi `web` deb yozardi.
+- **Veb bilan kelishuv** (1.2.1, server 1.38): ilova sahifaga `window.__EDUX_DESKTOP__ = {platform, version}` beradi —
+  veb shuni o'qib, ilova ichida «Yuklab olish» tugmalarini yashiradi va murojaat (`POST /api/v1/public/support`)
+  kontekstiga `app=desktop` va ilova versiyasini o'zi yozadi. Ilova so'rovlarga aralashmaydi (1.2.0 dagi fetch/XHR
+  orqali qo'shish olib tashlandi — kontekst ikki marta yozilmaydi). Sozlamalar yorliqlari (`?tab=`) — veb manzilining
+  bir qismi, ilova ichida ham, «Brauzerda ochish» da ham saqlanadi.
 - **Internet yo'q / server ochilmasa** — tushunarli sahifa: nima bo'ldi («Internet aloqasi yo'q», «Server bilan aloqa yo'q»
   yoki «Bu manzilda EduX topilmadi»), holat ro'yxati (Internet — ulangan/ulanmagan, Server — javob bermadi), katta
   «Qayta urinish» tugmasi. Ilova o'zi ham qayta urinadi (15, 30, keyin har 60 soniyada), internet qaytishi bilan darhol ulanadi.

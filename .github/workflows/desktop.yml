@@ -124,7 +124,18 @@ jobs:
             fi
           fi
           echo "Server: $EDUX_SERVER"
-          npx tauri build ${{ matrix.args }} $TAURI_EXTRA_ARGS 2>&1 | tee build.log
+          # macOS runner'da DMG yaratish (hdiutil «Resource busy») ba'zan tasodifan yiqiladi — 2 marta qayta urinadi
+          # (kompilyatsiya keshda, qayta urinish tez).
+          for attempt in 1 2 3; do
+            if npx tauri build ${{ matrix.args }} $TAURI_EXTRA_ARGS 2>&1 | tee build.log; then break; fi
+            if [ "${{ matrix.name }}" = "macos" ] && [ "$attempt" -lt 3 ] && grep -q "bundle_dmg" build.log; then
+              echo "::warning::DMG yaratish $attempt-urinishda yiqildi — qayta urinish"
+              hdiutil info | grep -E '^/dev/disk' | awk '{print $1}' | xargs -I{} hdiutil detach {} -force > /dev/null 2>&1 || true
+              sleep 10
+              continue
+            fi
+            exit 1
+          done
 
       - name: O'zgarmas nomlar
         shell: bash

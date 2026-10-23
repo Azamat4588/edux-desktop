@@ -3,55 +3,99 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
   <title>EduX</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <main class="card" id="card">
-    <img class="logo" src="logo.png" alt="EduX" width="72" height="72">
+  <main class="shell">
+    <header class="brand">
+      <img src="logo.png" alt="" width="40" height="40">
+      <span class="brand-name">EduX</span>
+    </header>
 
-    <!-- Ulanish -->
-    <section id="view-boot" class="view">
-      <div class="spinner" aria-hidden="true"></div>
-      <p class="muted" data-t="connecting"></p>
-      <p class="server-line" id="boot-server"></p>
+    <!-- Yuklanish: serverga ulanmoqda -->
+    <section id="view-boot" class="card view" aria-live="polite">
+      <div class="loader" aria-hidden="true"><span></span><span></span><span></span></div>
+      <h1 class="title" data-t="boot_title"></h1>
+      <p class="lead"><span data-t="boot_text"></span> <b class="host" id="boot-server"></b></p>
+      <p class="lead small" id="boot-slow" data-t="boot_slow" hidden></p>
     </section>
 
-    <!-- Server manzili va til -->
-    <section id="view-settings" class="view" hidden>
-      <h1 data-t="settings_title"></h1>
-      <p class="muted" data-t="settings_hint"></p>
+    <!-- Server bilan aloqa yo'q / bu manzilda EduX yo'q -->
+    <section id="view-error" class="card view tone" data-tone="danger" hidden>
+      <div class="icon-tile" aria-hidden="true">
+        <svg id="error-icon" viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></svg>
+      </div>
+      <h1 class="title" id="error-title"></h1>
+      <p class="lead" id="error-text"></p>
+
+      <ul class="status" id="error-status">
+        <li>
+          <span class="dot" id="st-net-dot"></span>
+          <span class="status-name" data-t="st_internet"></span>
+          <span class="status-value" id="st-net"></span>
+        </li>
+        <li>
+          <span class="dot" id="st-srv-dot"></span>
+          <span class="status-name"><span data-t="st_server"></span> <span class="host" id="error-server"></span></span>
+          <span class="status-value" id="st-srv"></span>
+        </li>
+      </ul>
+
+      <div class="actions">
+        <button type="button" class="btn-primary wide" id="retry">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a9 9 0 1 1-2.64-6.36"/><path d="M21 3v6h-6"/></svg>
+          <span data-t="retry"></span>
+        </button>
+      </div>
+      <p class="auto" id="auto-retry" aria-live="polite"></p>
+
+      <details class="tech" id="tech" hidden>
+        <summary data-t="tech_details"></summary>
+        <code id="tech-text"></code>
+      </details>
+
+      <div class="card-foot">
+        <button type="button" class="link-quiet" id="change" data-t="change_server"></button>
+      </div>
+    </section>
+
+    <!-- Kengaytirilgan: server manzili va til -->
+    <section id="view-settings" class="card view" hidden>
+      <div class="eyebrow"><span class="badge" data-t="advanced"></span></div>
+      <h1 class="title" data-t="settings_title"></h1>
+      <p class="lead" data-t="settings_hint"></p>
+
       <form id="settings-form" novalidate>
-        <label for="server" data-t="server_label"></label>
-        <input id="server" name="server" type="text" autocomplete="url" spellcheck="false" autocapitalize="off" required>
-        <p class="hint" data-t="server_examples"></p>
-        <label for="lang" data-t="lang_label"></label>
-        <select id="lang" name="lang">
-          <option value="" data-t="lang_auto"></option>
-          <option value="uz">O'zbekcha</option>
-          <option value="ru">Русский</option>
-          <option value="en">English</option>
-        </select>
-        <p class="error" id="settings-error" role="alert" hidden></p>
-        <div class="actions">
-          <button type="button" class="link" id="reset" data-t="reset_default" hidden></button>
-          <span class="spacer"></span>
-          <button type="button" class="secondary" id="cancel" data-t="cancel"></button>
-          <button type="submit" class="primary" id="save"><span data-t="continue"></span></button>
+        <div class="field">
+          <label class="field-label" for="server" data-t="server_label"></label>
+          <span class="field-hint" id="server-hint"></span>
+          <input class="field-input" id="server" name="server" type="text" autocomplete="url" spellcheck="false"
+                 autocapitalize="off" aria-describedby="server-hint settings-error" required>
+          <p class="field-error" id="settings-error" role="alert" hidden></p>
+        </div>
+
+        <div class="field">
+          <label class="field-label" for="lang" data-t="lang_label"></label>
+          <select class="field-input" id="lang" name="lang">
+            <option value="" data-t="lang_auto"></option>
+            <option value="uz">O'zbekcha</option>
+            <option value="ru">Русский</option>
+            <option value="en">English</option>
+          </select>
+        </div>
+
+        <div class="note-row">
+          <p class="note" id="default-note"></p>
+          <button type="button" class="link-action" id="reset" data-t="reset_default" hidden></button>
+        </div>
+
+        <div class="actions end">
+          <button type="button" class="btn-secondary" id="cancel" data-t="cancel"></button>
+          <button type="submit" class="btn-primary" id="save"><span data-t="save"></span></button>
         </div>
       </form>
-    </section>
-
-    <!-- Server ochilmadi -->
-    <section id="view-error" class="view" hidden>
-      <div class="error-icon" aria-hidden="true">!</div>
-      <h1 id="error-title"></h1>
-      <p class="muted" id="error-text"></p>
-      <p class="server-line" id="error-server"></p>
-      <div class="actions center">
-        <button type="button" class="primary" id="retry" data-t="retry"></button>
-      </div>
-      <button type="button" class="link small" id="change" data-t="change_server"></button>
     </section>
 
     <footer class="foot" id="foot"></footer>

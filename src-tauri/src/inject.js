@@ -11,40 +11,80 @@
         return internals.invoke(cmd, args, options);
     }
 
-    // Yangilanish banneri (Rust tomondan chaqiriladi; mahalliy sahifada ham ishlaydi).
+    // Yangilanish xabari (Rust tomondan chaqiriladi; ilovaning o'z sahifasida ham ishlaydi).
+    // Ranglar veb tizimning 1.35 tokenlaridan (--surface, --accent, ...): asosiy rang va tungi rejim o'zi mos keladi;
+    // tokenlar bo'lmasa (eski server) — Klassik/Moviy qiymatlari. Shadow DOM — sahifa uslublari aralashmaydi.
     window.__eduxUpdate = function (info) {
         const show = function () {
             if (document.getElementById('edux-update-banner')) return;
-            const bar = document.createElement('div');
-            bar.id = 'edux-update-banner';
-            bar.setAttribute('role', 'status');
-            bar.style.cssText = 'position:fixed;right:16px;bottom:16px;z-index:2147483647;max-width:360px;'
-                + 'background:#1F63F5;color:#fff;border-radius:12px;padding:14px 16px;box-shadow:0 8px 30px rgba(0,0,0,.25);'
-                + 'font:14px/1.4 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif';
-            const title = document.createElement('div');
-            title.style.cssText = 'font-weight:600;margin-bottom:4px';
-            title.textContent = info.title + ' — ' + info.version;
-            bar.appendChild(title);
+            const host = document.createElement('div');
+            host.id = 'edux-update-banner';
+            host.style.cssText = 'position:fixed;right:16px;bottom:calc(16px + var(--bottom-nav-h, 0px));z-index:2147483647';
+            const root = host.attachShadow ? host.attachShadow({ mode: 'open' }) : host;
+            const css = ''
+                + ':host{all:initial}'
+                + '.box{position:relative;box-sizing:border-box;width:360px;max-width:calc(100vw - 32px);overflow:hidden;'
+                + 'background:var(--surface,#fff);color:var(--text-1,#131c36);border:1px solid var(--border,#e2e8f2);'
+                + 'border-radius:var(--r-lg,14px);box-shadow:var(--shadow-3,0 2px 6px rgb(16 24 40/.06),0 20px 40px -12px rgb(16 24 40/.22));'
+                + 'padding:16px 16px 16px 20px;font:14px/1.5 var(--font-sans,"Onest Variable",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif);'
+                + 'animation:in var(--dur-3,320ms) var(--ease,cubic-bezier(.2,.7,.2,1))}'
+                + '.box:before{content:"";position:absolute;inset:0 auto 0 0;width:4px;background:var(--accent,#1f63f5)}'
+                + '@keyframes in{from{opacity:0;transform:translateY(12px)}}'
+                + '@media (prefers-reduced-motion:reduce){.box{animation:none}}'
+                + '.head{display:flex;gap:12px;align-items:flex-start}'
+                + '.tile{flex:none;width:40px;height:40px;border-radius:var(--r-md,10px);display:grid;place-items:center;'
+                + 'background:var(--accent-soft,#eef4ff);color:var(--accent-strong,#1650d4)}'
+                + '.txt{flex:1;min-width:0}'
+                + '.title{font-weight:700;font-size:15px;line-height:1.3;margin:1px 0 2px}'
+                + '.sub{color:var(--text-2,#4f5a73);font-size:13px}'
+                + '.x{flex:none;margin:-6px -6px 0 0;width:32px;height:32px;border:0;border-radius:var(--r-sm,8px);background:transparent;'
+                + 'color:var(--text-3,#586379);cursor:pointer;display:grid;place-items:center}'
+                + '.x:hover{background:var(--surface-2,#f8f9fc);color:var(--text-1,#131c36)}'
+                + '.notes{margin:12px 0 0;padding:8px 12px;border-radius:var(--r-sm,8px);background:var(--surface-2,#f8f9fc);'
+                + 'color:var(--text-2,#4f5a73);font-size:13px;white-space:pre-line;max-height:96px;overflow:auto}'
+                + '.row{display:flex;gap:8px;justify-content:flex-end;margin-top:14px}'
+                + 'button.b{font:inherit;font-weight:600;font-size:14px;min-height:40px;padding:0 16px;border-radius:var(--r-md,10px);cursor:pointer;'
+                + 'border:1px solid transparent;display:inline-flex;align-items:center;gap:6px}'
+                + '.later{background:var(--surface,#fff);color:var(--text-1,#131c36);border-color:var(--border-strong,#cbd3e1)!important}'
+                + '.later:hover{background:var(--surface-2,#f8f9fc)}'
+                + '.dl{background:var(--accent,#1f63f5);color:var(--text-on-accent,#fff)}'
+                + '.dl:hover{background:var(--accent-hover,#1650d4)}'
+                + 'button:focus-visible{outline:2px solid var(--color-indigo-500,#3478ff);outline-offset:2px}';
+            const arrow = '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" '
+                + 'stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11"/><path d="m7 10 5 5 5-5"/><path d="M5 20h14"/></svg>';
+            const cross = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" '
+                + 'stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>';
+            const style = document.createElement('style');
+            style.textContent = css;
+            const box = document.createElement('div');
+            box.className = 'box';
+            box.setAttribute('role', 'status');
+            box.setAttribute('aria-live', 'polite');
+            box.innerHTML = '<div class="head"><div class="tile">' + arrow + '</div><div class="txt"><div class="title"></div>'
+                + '<div class="sub"></div></div><button type="button" class="x">' + cross + '</button></div>'
+                + '<div class="notes" hidden></div><div class="row"><button type="button" class="b later"></button>'
+                + '<button type="button" class="b dl">' + arrow.replace(/20/g, '18') + '<span></span></button></div>';
+            box.querySelector('.title').textContent = info.title;
+            box.querySelector('.sub').textContent = info.text || ('EduX ' + info.version);
             if (info.notes) {
-                const notes = document.createElement('div');
-                notes.style.cssText = 'opacity:.9;margin-bottom:8px;white-space:pre-line;max-height:120px;overflow:auto';
+                const notes = box.querySelector('.notes');
+                notes.hidden = false;
                 notes.textContent = info.notes;
-                bar.appendChild(notes);
             }
-            const row = document.createElement('div');
-            row.style.cssText = 'display:flex;gap:8px;justify-content:flex-end;margin-top:6px';
-            const later = document.createElement('button');
+            const close = function () { host.remove(); };
+            const x = box.querySelector('.x');
+            x.setAttribute('aria-label', info.close || info.later);
+            x.title = info.close || info.later;
+            x.onclick = close;
+            const later = box.querySelector('.later');
             later.textContent = info.later;
-            later.style.cssText = 'background:transparent;color:#fff;border:1px solid rgba(255,255,255,.6);border-radius:8px;padding:6px 12px;cursor:pointer;font:inherit';
-            later.onclick = function () { bar.remove(); };
-            const dl = document.createElement('button');
-            dl.textContent = info.download;
-            dl.style.cssText = 'background:#fff;color:#1F63F5;border:0;border-radius:8px;padding:6px 12px;cursor:pointer;font:inherit;font-weight:600';
-            dl.onclick = function () { invoke('open_external', { url: info.url }).catch(function () {}); bar.remove(); };
-            row.appendChild(later);
-            row.appendChild(dl);
-            bar.appendChild(row);
-            document.body.appendChild(bar);
+            later.onclick = close;
+            const dl = box.querySelector('.dl');
+            dl.querySelector('span').textContent = info.download;
+            dl.onclick = function () { invoke('open_external', { url: info.url }).catch(function () {}); close(); };
+            root.appendChild(style);
+            root.appendChild(box);
+            document.body.appendChild(host);
         };
         if (document.body) show(); else document.addEventListener('DOMContentLoaded', show);
     };

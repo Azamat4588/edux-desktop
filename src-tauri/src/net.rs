@@ -103,6 +103,22 @@ pub fn newer_desktop(apps: &Value, current: &str) -> Option<UpdateInfo> {
     Some(UpdateInfo { version, url, notes })
 }
 
+/// Serverdagi doimiy yuklab olish havolasi (docs/apps.md): `<server>/download/windows|macos|linux`.
+/// Server faylni o'zi beradi yoki tashqi havolaga (GitHub relizi) yo'naltiradi — havola hech qachon o'zgarmaydi.
+/// Linux'da .deb dan o'rnatilgan ilova (AppImage emas) — `/download/linux/deb`.
+pub fn download_url(server: &str) -> String {
+    download_url_for(server, platform_key(), std::env::var_os("APPIMAGE").is_some())
+}
+
+fn download_url_for(server: &str, platform: &str, appimage: bool) -> String {
+    let base = server.trim_end_matches('/');
+    if platform == "linux" && !appimage {
+        format!("{base}/download/linux/deb")
+    } else {
+        format!("{base}/download/{platform}")
+    }
+}
+
 fn parts(v: &str) -> Vec<u64> {
     v.trim_start_matches(['v', 'V'])
         .split(['-', '+'])
@@ -150,5 +166,16 @@ mod tests {
         assert_eq!(u.version, "1.2.0");
         assert!(newer_desktop(&apps, "1.2.0").is_none());
         assert!(newer_desktop(&serde_json::json!({}), "1.0.0").is_none());
+        // Platforma yashirilgan yoki havolasi yo'q (null) — xabar chiqmaydi.
+        let hidden = serde_json::json!({ "desktop": { "windows": null, "macos": null, "linux": null } });
+        assert!(newer_desktop(&hidden, "1.0.0").is_none());
+    }
+
+    #[test]
+    fn permanent_download_links() {
+        assert_eq!(download_url_for("https://edux.uz/", "windows", false), "https://edux.uz/download/windows");
+        assert_eq!(download_url_for("https://edux.uz", "macos", false), "https://edux.uz/download/macos");
+        assert_eq!(download_url_for("https://edux.uz", "linux", true), "https://edux.uz/download/linux");
+        assert_eq!(download_url_for("http://10.0.0.5:8000", "linux", false), "http://10.0.0.5:8000/download/linux/deb");
     }
 }

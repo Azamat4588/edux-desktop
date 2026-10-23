@@ -155,7 +155,8 @@ jobs:
   release:
     needs: build
     # Bitta OS yig'ilmasa ham qolganlari «desktop-latest» ga chiqadi; versiyali reliz — faqat hammasi tayyor bo'lsa.
-    if: ${{ !cancelled() && github.event_name != 'pull_request' }}
+    # Relizlar faqat main'dan: boshqa branch'da qo'lda ishga tushirish (workflow_dispatch) — faqat yig'ish va artefaktlar.
+    if: ${{ !cancelled() && github.event_name != 'pull_request' && github.ref == 'refs/heads/main' }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5

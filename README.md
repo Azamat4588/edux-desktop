@@ -28,18 +28,31 @@ Linux — WebKitGTK). O'rnatuvchi hajmi kichik (3–12 MB), alohida brauzer qo's
 - **Menyu:** Qayta yuklash (Ctrl+R), Orqaga/Oldinga, Kattalashtirish/Kichiklashtirish/Asl o'lcham (Ctrl +/−/0),
   To'liq ekran, Kengaytirilgan → Server manzili…, Brauzerda ochish, Yordam markazi (F1 → `<server>/help`),
   Yangilanishni tekshirish, EduX haqida (ilova va server versiyasi).
-- **Internet yo'q / server ochilmasa** — «Qayta urinish» tugmali sahifa (pastida kichik «Server manzilini o'zgartirish (kengaytirilgan)» havolasi).
+- **Internet yo'q / server ochilmasa** — tushunarli sahifa: nima bo'ldi («Internet aloqasi yo'q», «Server bilan aloqa yo'q»
+  yoki «Bu manzilda EduX topilmadi»), holat ro'yxati (Internet — ulangan/ulanmagan, Server — javob bermadi), katta
+  «Qayta urinish» tugmasi. Ilova o'zi ham qayta urinadi (15, 30, keyin har 60 soniyada), internet qaytishi bilan darhol ulanadi.
+  «Texnik ma'lumot» — yordam uchun xato matni; pastida «Server manzilini o'zgartirish (kengaytirilgan)».
+- **Skaner qurilmasi** (USB/Bluetooth QR yoki shtrix-kod, klaviatura rejimi) veb sahifadagidek ishlaydi: tugma hodisalari
+  WebView'ga to'g'ridan-to'g'ri keladi, ilova ularni ushlab qolmaydi (menyu tugmalari faqat Ctrl/Cmd/Alt/F bilan).
+  Linux (WebKitGTK) da haqiqiy ilovada sinalgan: 8 ms/belgi tezlikdagi kod + Enter/NumpadEnter tutiladi, sekin yozuv
+  (200 ms) skaner deb olinmaydi, rus joylashuvida ham `event.code` to'g'ri (`У` → `KeyE`), kod lotincha tiklanadi.
 - **Yangi versiya:** ishga tushganda va har 6 soatda `GET <server>/api/v1/public/apps` so'raladi;
-  `desktop.windows|macos|linux.version` joriy versiyadan yangi bo'lsa, pastki burchakda «Yangi versiya mavjud» banneri
-  chiqadi, «Yuklab olish» havolani brauzerda ochadi. Endpoint yo'q bo'lsa (404) — hech narsa chiqmaydi.
+  `desktop.windows|macos|linux.version` joriy versiyadan yangi bo'lsa, pastki burchakda «Yangi versiya mavjud» xabari
+  chiqadi: «EduX 1.2.0 chiqdi, sizda 1.1.0…», izoh (`notes`), «Keyinroq» va «Yuklab olish». «Yuklab olish» serverdagi
+  **doimiy havolani** brauzerda ochadi: `<server>/download/windows|macos|linux` (Linux'da .deb dan o'rnatilgan bo'lsa —
+  `/download/linux/deb`); server faylni o'zi beradi yoki GitHub relizga yo'naltiradi. Platforma yashirilgan, versiya
+  kiritilmagan yoki endpoint yo'q (404) bo'lsa — hech narsa chiqmaydi.
+- **Dizayn** — veb tizimning 1.35 «Daftar» dizayn tizimi: ilovaning o'z ekranlari (yuklanish, aloqa yo'q, server manzili)
+  bir xil tokenlar (rang, matn, chegara, burchak, soya), Onest shrifti (ilova ichida, internetsiz ham), tungi rejim —
+  kompyuter sozlamasiga qarab. Yangilanish xabari veb tokenlaridan foydalanadi — tashkilot rangi va tungi rejimga moslashadi.
 
 Javob namunasi:
 
 ```json
 { "desktop": {
-    "windows": { "version": "1.0.1", "url": "https://…/EduX-Setup-x64.exe", "notes": "…" },
-    "macos":   { "version": "1.0.1", "url": "https://…/EduX-macOS-universal.dmg" },
-    "linux":   { "version": "1.0.1", "url": "https://…/EduX-linux-x86_64.AppImage" } } }
+    "windows": { "version": "1.1.0", "url": "https://…/EduX-Setup-x64.exe", "notes": "…" },
+    "macos":   { "version": "1.1.0", "url": "https://…/EduX-macOS-universal.dmg" },
+    "linux":   { "version": "1.1.0", "url": "https://…/EduX-linux-x86_64.AppImage" } } }
 ```
 
 ## Yuklab olish (o'zgarmas havolalar)
@@ -141,7 +154,8 @@ Belgilar (ikonka) `src-tauri/icons/source.png` dan (mobil ilova logotipi asosida
 ## Tuzilishi
 
 ```
-ui/                     ilovaning o'z sahifasi: ulanish, xato, kengaytirilgan server manzili (uz/ru/en)
+ui/                     ilovaning o'z sahifasi: yuklanish, aloqa yo'q, kengaytirilgan server manzili (uz/ru/en)
+ui/fonts/               Onest shrifti (OFL), ekranlar internetsiz ham to'g'ri chiziladi
 src-tauri/src/lib.rs    oyna, menyu, navigatsiya, yuklab olish, ruxsatlar, deep link, yangilanishlar
 src-tauri/src/inject.js veb ilova ichiga qo'shiladigan ko'prik (blob yuklab olish, print, Notification, window.open)
 src-tauri/src/settings.rs  sozlamalar, manzilni normallashtirish

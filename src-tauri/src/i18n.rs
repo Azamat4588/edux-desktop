@@ -33,7 +33,13 @@ pub fn t(lang: &str, key: &str) -> String {
         "about.unknown" => ("noma'lum", "неизвестно", "unknown"),
         "update.title" => ("Yangi versiya mavjud", "Доступна новая версия", "A new version is available"),
         "update.download" => ("Yuklab olish", "Скачать", "Download"),
+        "update.text" => (
+            "EduX {new} chiqdi, sizda {current}. Yuklab olib o'rnating — sozlamalar saqlanib qoladi.",
+            "Вышла EduX {new}, у вас {current}. Скачайте и установите — настройки сохранятся.",
+            "EduX {new} is out, you have {current}. Download and install it — your settings are kept.",
+        ),
         "update.later" => ("Keyinroq", "Позже", "Later"),
+        "update.close" => ("Yopish", "Закрыть", "Close"),
         "update.none" => ("Sizda eng so'nggi versiya o'rnatilgan.", "У вас установлена последняя версия.", "You have the latest version."),
         "save.title" => ("Faylni saqlash", "Сохранить файл", "Save file"),
         "save.done" => ("Fayl saqlandi", "Файл сохранён", "File saved"),

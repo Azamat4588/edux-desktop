@@ -417,9 +417,12 @@ fn check_updates(app: &AppHandle, manual: bool) {
             }
             *notified = Some(info.version.clone());
             drop(notified);
+            // «Yuklab olish» — serverdagi doimiy havola (/download/<os>), apps javobidagi url emas.
+            let text = t(&lang, "update.text").replace("{new}", &info.version).replace("{current}", &current);
             let payload = serde_json::json!({
-                "version": info.version, "url": info.url, "notes": info.notes,
-                "title": t(&lang, "update.title"), "download": t(&lang, "update.download"), "later": t(&lang, "update.later"),
+                "version": info.version, "current": current, "url": net::download_url(&server), "notes": info.notes,
+                "title": t(&lang, "update.title"), "text": text, "download": t(&lang, "update.download"),
+                "later": t(&lang, "update.later"), "close": t(&lang, "update.close"),
             });
             if let Some(w) = main_window(app) {
                 let _ = w.eval(format!("window.__eduxUpdate && window.__eduxUpdate({payload})"));

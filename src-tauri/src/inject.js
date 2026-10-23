@@ -212,6 +212,48 @@
         };
     }
 
+    // Internet uzilsa — sahifa tepasida kichik ogohlantirish (veb tokenlari: --warning-*), qaytsa — yo'qoladi.
+    // Aloqasiz F5 / Ctrl+R sahifani WebView'ning «sahifa ochilmadi» oynasiga almashtirib yubormasin.
+    let offlineHost = null;
+    function showOffline() {
+        if (offlineHost || !document.body) return;
+        offlineHost = document.createElement('div');
+        offlineHost.id = 'edux-offline-banner';
+        offlineHost.style.cssText = 'position:fixed;left:50%;top:12px;transform:translateX(-50%);z-index:2147483647;max-width:calc(100vw - 32px)';
+        const root = offlineHost.attachShadow ? offlineHost.attachShadow({ mode: 'open' }) : offlineHost;
+        const style = document.createElement('style');
+        style.textContent = ':host{all:initial}'
+            + '.bar{box-sizing:border-box;display:flex;gap:10px;align-items:center;padding:10px 14px;border-radius:var(--r-md,10px);'
+            + 'background:var(--warning-bg,#fffbeb);color:var(--warning-fg,#b45309);border:1px solid var(--warning-line,#fde68a);'
+            + 'box-shadow:var(--shadow-3,0 8px 24px -8px rgb(16 24 40/.25));font:600 13.5px/1.4 var(--font-sans,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif)}';
+        const bar = document.createElement('div');
+        bar.className = 'bar';
+        bar.setAttribute('role', 'status');
+        bar.innerHTML = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" '
+            + 'aria-hidden="true"><path d="M2 2l20 20"/><path d="M8.5 16.5a5 5 0 0 1 7 0"/><path d="M5 12.86a10 10 0 0 1 5.17-2.69"/>'
+            + '<path d="M19 12.86a10 10 0 0 0-2.01-1.48"/><path d="M12 20h.01"/></svg><span></span>';
+        bar.querySelector('span').textContent = cfg.offline || 'Internet aloqasi yo\'q';
+        root.appendChild(style);
+        root.appendChild(bar);
+        document.body.appendChild(offlineHost);
+    }
+    function hideOffline() {
+        if (offlineHost) offlineHost.remove();
+        offlineHost = null;
+    }
+    window.addEventListener('offline', showOffline);
+    window.addEventListener('online', hideOffline);
+    if (navigator.onLine === false) {
+        if (document.body) showOffline(); else document.addEventListener('DOMContentLoaded', showOffline);
+    }
+    document.addEventListener('keydown', function (e) {
+        const reload = e.key === 'F5' || ((e.ctrlKey || e.metaKey) && (e.key === 'r' || e.key === 'R'));
+        if (reload && navigator.onLine === false) {
+            e.preventDefault();
+            showOffline();
+        }
+    }, true);
+
     // Web Notification → OS bildirishnomasi.
     function EduxNotification(title, options) {
         options = options || {};

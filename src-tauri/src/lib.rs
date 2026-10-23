@@ -6,7 +6,7 @@ mod net;
 mod settings;
 
 use i18n::t;
-use settings::{same_site, Settings};
+use settings::{same_site_in, Settings};
 use std::path::PathBuf;
 use std::sync::atomic::{AtomicU32, Ordering};
 use std::sync::Mutex;
@@ -45,6 +45,8 @@ pub struct AppState {
     last_error: Mutex<Option<String>>,
     notified_version: Mutex<Option<String>>,
     popup_seq: AtomicU32,
+    /// Serverning asosiy domeni (GET /api/v1/site → domain): None — hali so'ralmagan, Some(None) — subdomensiz.
+    site_domain: Mutex<Option<Option<String>>>,
 }
 
 impl AppState {
@@ -58,6 +60,12 @@ impl AppState {
     }
     fn lang(&self) -> String {
         self.settings.lock().unwrap().effective_lang()
+    }
+    /// Manzil tanlangan server saytigami (server aytgan domen bo'yicha; noma'lum bo'lsa — taxmin).
+    fn on_site(&self, url: &Url) -> bool {
+        let Some(server) = self.server() else { return false };
+        let domain = self.site_domain.lock().unwrap().clone();
+        same_site_in(url, &server, domain.as_ref().map(|d| d.as_deref()))
     }
     fn update<F: FnOnce(&mut Settings)>(&self, f: F) {
         let mut s = self.settings.lock().unwrap();
@@ -82,7 +90,7 @@ fn trusted(app: &AppHandle, webview: &Webview) -> bool {
     if is_local(&url) {
         return true;
     }
-    app.state::<AppState>().server().map(|s| same_site(&url, &s)).unwrap_or(false)
+    app.state::<AppState>().on_site(&url)
 }
 
 fn main_window(app: &AppHandle) -> Option<WebviewWindow> {
@@ -210,9 +218,11 @@ fn message_on_main(app: &AppHandle, title: String, text: String) {
 // ---------------------------------------------------------------- oynalar
 
 fn init_script(app: &AppHandle) -> String {
+    let lang = app.state::<AppState>().lang();
     let cfg = serde_json::json!({
         "platform": net::platform_key(),
         "version": app.package_info().version.to_string(),
+        "offline": t(&lang, "offline.text"),
     });
     format!("window.__EDUX_DESKTOP__ = {cfg};\n{INJECT}")
 }
@@ -231,8 +241,7 @@ fn build_window(app: &AppHandle, label: &str, url: WebviewUrl, title: &str) -> t
         .on_navigation(move |url| navigation_allowed(&nav_app, url))
         .on_new_window(move |url, _features| {
             let app = new_app.clone();
-            let server = app.state::<AppState>().server();
-            if matches!(url.scheme(), "http" | "https") && server.as_deref().map(|s| same_site(&url, s)).unwrap_or(false) {
+            if matches!(url.scheme(), "http" | "https") && app.state::<AppState>().on_site(&url) {
                 std::thread::spawn(move || {
                     let _ = open_popup(&app, url);
                 });
@@ -292,10 +301,8 @@ fn navigation_allowed(app: &AppHandle, url: &Url) -> bool {
             if is_local(url) {
                 return true;
             }
-            if let Some(server) = app.state::<AppState>().server() {
-                if same_site(url, &server) {
-                    return true;
-                }
+            if app.state::<AppState>().on_site(url) {
+                return true;
             }
             // Iframe ichidagi video/vidjetlar (faqat embed manzillari).
             let host = url.host_str().unwrap_or("");
@@ -351,6 +358,12 @@ fn open_server(app: &AppHandle, window: &WebviewWindow) -> Result<(), String> {
     let Some(server) = state.server() else { return Err("setup".into()) };
     match net::check_options(&server, 12) {
         Ok(_) => {
+            // Tashkilot subdomenlari ilova ichida qolishi uchun server domeni bir marta so'raladi.
+            if state.site_domain.lock().unwrap().is_none() {
+                if let Some(domain) = net::fetch_site_domain(&server) {
+                    *state.site_domain.lock().unwrap() = Some(domain);
+                }
+            }
             let path = state.pending_path.lock().unwrap().take().unwrap_or_else(|| "/login".into());
             let url = Url::parse(&format!("{server}{path}")).map_err(|e| e.to_string())?;
             *state.last_error.lock().unwrap() = None;
@@ -392,7 +405,7 @@ fn handle_deep_link(app: &AppHandle, url: &Url) {
     let _ = window.unminimize();
     let _ = window.show();
     let _ = window.set_focus();
-    let on_server = window.url().ok().zip(state.server()).map(|(u, s)| same_site(&u, &s)).unwrap_or(false);
+    let on_server = window.url().ok().map(|u| state.on_site(&u)).unwrap_or(false);
     if on_server {
         let _ = window.eval(format!("window.__eduxNavigate && window.__eduxNavigate({})", serde_json::json!(path)));
     } else {
@@ -556,7 +569,7 @@ fn on_menu(app: &AppHandle, id: &str) {
         }
         "help" => {
             if let (Some(w), Some(server)) = (main_window(app), state.server()) {
-                let on_server = w.url().map(|u| same_site(&u, &server)).unwrap_or(false);
+                let on_server = w.url().map(|u| state.on_site(&u)).unwrap_or(false);
                 if on_server {
                     let _ = w.eval("window.__eduxNavigate && window.__eduxNavigate('/help')");
                 } else if let Ok(url) = Url::parse(&format!("{server}/help")) {
@@ -684,6 +697,7 @@ fn save_settings(
         s.lang = lang;
     });
     *state.notified_version.lock().unwrap() = None;
+    *state.site_domain.lock().unwrap() = None;
     refresh_menu(&app);
     Ok(())
 }
@@ -714,8 +728,7 @@ fn open_window(app: AppHandle, webview: Webview, url: String) -> Result<(), Stri
         return Err("forbidden".into());
     }
     let parsed = Url::parse(&url).map_err(|e| e.to_string())?;
-    let server = app.state::<AppState>().server().ok_or("no server")?;
-    if !same_site(&parsed, &server) {
+    if !app.state::<AppState>().on_site(&parsed) {
         open_external_url(&app, &url);
         return Ok(());
     }
@@ -819,6 +832,7 @@ pub fn run() {
                 last_error: Mutex::new(None),
                 notified_version: Mutex::new(None),
                 popup_seq: AtomicU32::new(0),
+                site_domain: Mutex::new(None),
             });
 
             // edux:// sxemasi (Linux AppImage va Windows'da ishga tushganda ham ro'yxatdan o'tadi).

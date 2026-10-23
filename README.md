@@ -16,7 +16,10 @@ Linux — WebKitGTK). O'rnatuvchi hajmi kichik (3–12 MB), alohida brauzer qo's
   saqlashdan oldin `GET <server>/api/v1/auth/options` bilan tekshiriladi. «Asosiy serverga qaytish» tugmasi bor.
 - **Til:** o'zbekcha / ruscha / inglizcha — kompyuter tiliga qarab, sozlamalarda qo'lda tanlash mumkin.
 - **Oyna** o'lchami va joyi eslab qolinadi; ilova **bitta nusxada** ishlaydi (qayta ochilsa, mavjud oyna oldinga chiqadi).
-- **Havolalar:** o'sha server (va uning subdomenlari) ilova ichida; boshqa saytlar, `mailto:`, `tel:`, Telegram — tizim brauzeri/ilovasida.
+- **Havolalar:** o'sha server ilova ichida; tashkilot subdomenlari — server o'zi aytgan asosiy domen bo'yicha
+  (`GET <server>/api/v1/site` → `domain`; domen berilmagan serverda — faqat aynan shu manzil, `co.uz` kabi ommaviy
+  qo'shimchalar ostidagi qo'shni saytlar hech qachon «o'ziniki» hisoblanmaydi). Boshqa saytlar, `mailto:`, `tel:`,
+  Telegram — tizim brauzeri/ilovasida.
   `target="_blank"` va `window.open` bilan ochiladigan o'sha server sahifalari (kartalarni chop etish, sertifikat) — yangi ilova oynasida.
 - **Fayllarni yuklab olish** (Excel, PDF, ZIP): blob/`<a download>` va server yuborgan `attachment` javoblar —
   tizimning **«Saqlash»** oynasi orqali; saqlangach bildirishnoma chiqadi.
@@ -32,6 +35,8 @@ Linux — WebKitGTK). O'rnatuvchi hajmi kichik (3–12 MB), alohida brauzer qo's
   yoki «Bu manzilda EduX topilmadi»), holat ro'yxati (Internet — ulangan/ulanmagan, Server — javob bermadi), katta
   «Qayta urinish» tugmasi. Ilova o'zi ham qayta urinadi (15, 30, keyin har 60 soniyada), internet qaytishi bilan darhol ulanadi.
   «Texnik ma'lumot» — yordam uchun xato matni; pastida «Server manzilini o'zgartirish (kengaytirilgan)».
+  Ish vaqtida internet uzilsa (1.1.1) — sahifa tepasida «Internet aloqasi yo'q» belgisi (veb tokenlari bilan), sahifa
+  yopilmaydi; aloqasiz F5/Ctrl+R sahifani WebView xato oynasiga almashtirmaydi.
 - **Skaner qurilmasi** (USB/Bluetooth QR yoki shtrix-kod, klaviatura rejimi) veb sahifadagidek ishlaydi: tugma hodisalari
   WebView'ga to'g'ridan-to'g'ri keladi, ilova ularni ushlab qolmaydi (menyu tugmalari faqat Ctrl/Cmd/Alt/F bilan).
   Linux (WebKitGTK) da haqiqiy ilovada sinalgan: 8 ms/belgi tezlikdagi kod + Enter/NumpadEnter tutiladi, sekin yozuv

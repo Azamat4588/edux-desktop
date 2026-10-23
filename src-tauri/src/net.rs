@@ -40,6 +40,23 @@ pub fn fetch_apps(server: &str) -> Option<Value> {
     serde_json::from_str::<Value>(&resp.into_string().ok()?).ok().filter(|v| v.is_object())
 }
 
+/// GET <server>/api/v1/site → `domain` (tashkilot subdomenlari uchun asosiy domen).
+/// Some(Some(d)) — domen bor, Some(None) — server subdomen ishlatmaydi, None — so'rab bo'lmadi.
+pub fn fetch_site_domain(server: &str) -> Option<Option<String>> {
+    let url = format!("{server}/api/v1/site");
+    let resp = agent(8).get(&url).set("Accept", "application/json").call().ok()?;
+    let value = serde_json::from_str::<Value>(&resp.into_string().ok()?).ok()?;
+    site_domain_of(&value)
+}
+
+fn site_domain_of(value: &Value) -> Option<Option<String>> {
+    let obj = value.as_object()?;
+    if !obj.contains_key("domain") {
+        return None; // eski server — domen taxmin qilinadi
+    }
+    Some(obj.get("domain").and_then(Value::as_str).map(str::trim).filter(|d| !d.is_empty()).map(str::to_lowercase))
+}
+
 /// Server versiyasi: options.version yoki apps.server.version / apps.version (qaysi biri bo'lsa).
 pub fn server_version(server: &str) -> Option<String> {
     let pick = |v: &Value| -> Option<String> {
@@ -169,6 +186,15 @@ mod tests {
         // Platforma yashirilgan yoki havolasi yo'q (null) — xabar chiqmaydi.
         let hidden = serde_json::json!({ "desktop": { "windows": null, "macos": null, "linux": null } });
         assert!(newer_desktop(&hidden, "1.0.0").is_none());
+    }
+
+    #[test]
+    fn site_domain_answer() {
+        assert_eq!(site_domain_of(&serde_json::json!({"domain": "edux.uz", "kind": "combined"})), Some(Some("edux.uz".into())));
+        assert_eq!(site_domain_of(&serde_json::json!({"domain": null})), Some(None));
+        assert_eq!(site_domain_of(&serde_json::json!({"domain": " "})), Some(None));
+        assert_eq!(site_domain_of(&serde_json::json!({"kind": "combined"})), None);
+        assert_eq!(site_domain_of(&serde_json::json!([])), None);
     }
 
     #[test]

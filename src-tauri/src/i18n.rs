@@ -41,6 +41,11 @@ pub fn t(lang: &str, key: &str) -> String {
         "update.later" => ("Keyinroq", "Позже", "Later"),
         "update.close" => ("Yopish", "Закрыть", "Close"),
         "update.none" => ("Sizda eng so'nggi versiya o'rnatilgan.", "У вас установлена последняя версия.", "You have the latest version."),
+        "offline.text" => (
+            "Internet aloqasi yo'q. Sahifa ochiq qoladi — aloqa tiklanishi bilan ish davom etadi.",
+            "Нет подключения к интернету. Страница останется открытой — работа продолжится, когда связь восстановится.",
+            "No internet connection. The page stays open — work continues once the connection is back.",
+        ),
         "save.title" => ("Faylni saqlash", "Сохранить файл", "Save file"),
         "save.done" => ("Fayl saqlandi", "Файл сохранён", "File saved"),
         "save.failed" => ("Faylni saqlab bo'lmadi", "Не удалось сохранить файл", "Could not save the file"),

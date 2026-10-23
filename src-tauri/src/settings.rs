@@ -103,31 +103,51 @@ pub fn normalize_server(input: &str, base: Option<&str>) -> Result<String, Strin
     Ok(url.origin().ascii_serialization())
 }
 
-/// Saytning asosiy domeni: app.edux.uz → edux.uz; IP/localhost — o'zi.
+/// Ikki bo'lakli ommaviy qo'shimchalar (co.uz, com.uz, org.uk ...): ular ostidagi saytlar bir-biriga begona.
+fn is_public_second_level(label: &str, tld: &str) -> bool {
+    tld.len() == 2 && matches!(label, "co" | "com" | "net" | "org" | "edu" | "gov" | "ac")
+}
+
+/// Saytning asosiy domeni: app.edux.uz → edux.uz, app.maktab.co.uz → maktab.co.uz; IP/localhost — o'zi.
 pub fn site_domain(host: &str) -> String {
     if is_ip_or_local(host) {
         return host.to_string();
     }
     let parts: Vec<&str> = host.split('.').collect();
-    if parts.len() <= 2 {
+    let keep = if parts.len() >= 3 && is_public_second_level(parts[parts.len() - 2], parts[parts.len() - 1]) { 3 } else { 2 };
+    if parts.len() <= keep {
         host.to_string()
     } else {
-        parts[parts.len() - 2..].join(".")
+        parts[parts.len() - keep..].join(".")
     }
 }
 
-/// Manzil tanlangan server saytiga tegishlimi (o'sha host yoki uning subdomenlari, o'sha sxema).
-pub fn same_site(url: &Url, server: &str) -> bool {
+/// Manzil tanlangan server saytiga tegishlimi.
+/// [domain] — serverning o'zi aytgan asosiy domen (GET /api/v1/site → `domain`):
+///   `Some(Some(d))` — `d` va uning subdomenlari (tashkilot manzillari) ham ilova ichida;
+///   `Some(None)` — server subdomen ishlatmaydi: faqat aynan shu manzil;
+///   `None` — hali noma'lum (eski server): domen manzildan taxmin qilinadi.
+pub fn same_site_in(url: &Url, server: &str, domain: Option<Option<&str>>) -> bool {
     let Ok(s) = Url::parse(server) else { return false };
     let (Some(host), Some(server_host)) = (url.host_str(), s.host_str()) else { return false };
     if host == server_host {
         return url.port_or_known_default() == s.port_or_known_default();
     }
-    if is_ip_or_local(server_host) {
+    if is_ip_or_local(server_host) || url.scheme() != "https" {
         return false;
     }
-    let domain = site_domain(server_host);
-    url.scheme() == "https" && (host == domain || host.ends_with(&format!(".{domain}")))
+    let domain = match domain {
+        Some(Some(d)) if !d.trim().is_empty() => d.trim().trim_matches('.').to_lowercase(),
+        Some(_) => return false,
+        None => site_domain(server_host),
+    };
+    host == domain || host.ends_with(&format!(".{domain}"))
+}
+
+/// [same_site_in] domen ma'lumotisiz (taxmin bilan).
+#[cfg(test)]
+pub fn same_site(url: &Url, server: &str) -> bool {
+    same_site_in(url, server, None)
 }
 
 #[cfg(test)]
@@ -153,6 +173,18 @@ mod tests {
         assert!(same_site(&Url::parse("https://markaz.edux.uz/").unwrap(), s));
         assert!(!same_site(&Url::parse("https://t.me/edux").unwrap(), s));
         assert!(!same_site(&Url::parse("http://markaz.edux.uz/").unwrap(), s));
+        // Ommaviy qo'shimcha ostida qo'shni sayt begona.
+        let co = "https://app.maktab.co.uz";
+        assert!(same_site(&Url::parse("https://markaz.maktab.co.uz/").unwrap(), co));
+        assert!(!same_site(&Url::parse("https://boshqa.co.uz/").unwrap(), co));
+        assert_eq!(site_domain("app.maktab.co.uz"), "maktab.co.uz");
+        assert_eq!(site_domain("edux.uz"), "edux.uz");
+        // Server o'z domenini aytsa — faqat o'sha domen; subdomensiz server — faqat aynan manzil.
+        let k = "https://edux.kuchkarov.uz";
+        assert!(same_site_in(&Url::parse("https://markaz.edux.kuchkarov.uz/").unwrap(), k, Some(Some("edux.kuchkarov.uz"))));
+        assert!(!same_site_in(&Url::parse("https://taxi.kuchkarov.uz/").unwrap(), k, Some(Some("edux.kuchkarov.uz"))));
+        assert!(!same_site_in(&Url::parse("https://taxi.kuchkarov.uz/").unwrap(), k, Some(None)));
+        assert!(same_site_in(&Url::parse("https://edux.kuchkarov.uz/login").unwrap(), k, Some(None)));
         let local = "http://127.0.0.1:8090";
         assert!(same_site(&Url::parse("http://127.0.0.1:8090/x").unwrap(), local));
         assert!(!same_site(&Url::parse("http://127.0.0.1:9000/x").unwrap(), local));

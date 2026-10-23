@@ -25,6 +25,8 @@ pub fn t(lang: &str, key: &str) -> String {
         "menu.fullscreen" => ("To'liq ekran", "Полноэкранный режим", "Full screen"),
         "menu.help" => ("Yordam", "Справка", "Help"),
         "menu.help_center" => ("Yordam markazi", "Центр помощи", "Help center"),
+        "menu.faq" => ("Ko'p beriladigan savollar", "Частые вопросы", "FAQ"),
+        "menu.support" => ("Murojaat yuborish", "Написать в поддержку", "Contact support"),
         "menu.updates" => ("Yangilanishni tekshirish", "Проверить обновления", "Check for updates"),
         "about.title" => ("EduX haqida", "О программе EduX", "About EduX"),
         "about.app" => ("Ilova versiyasi", "Версия приложения", "App version"),
@@ -57,4 +59,31 @@ pub fn t(lang: &str, key: &str) -> String {
         _ => uz,
     }
     .to_string()
+}
+
+#[cfg(test)]
+mod tests {
+    use super::t;
+
+    /// Menyu va dialog kalitlari uchala tilda to'ldirilgan (kalitning o'zi qaytmaydi), ruscha va inglizcha — o'zbekchadan farqli.
+    #[test]
+    fn menu_keys_translated() {
+        let keys = [
+            "menu.app", "menu.advanced", "menu.server", "menu.browser", "menu.about", "menu.quit", "menu.edit", "menu.view",
+            "menu.reload", "menu.back", "menu.forward", "menu.zoom_in", "menu.zoom_out", "menu.zoom_reset", "menu.fullscreen",
+            "menu.help", "menu.help_center", "menu.faq", "menu.support", "menu.updates", "offline.text", "update.text",
+        ];
+        for key in keys {
+            for lang in ["uz", "ru", "en"] {
+                assert_ne!(t(lang, key), key, "{lang}: {key}");
+            }
+            if key != "menu.app" {
+                assert_ne!(t("ru", key), t("uz", key), "ru: {key}");
+            }
+        }
+        assert_eq!(t("ru", "menu.help"), "Справка");
+        assert_eq!(t("ru", "menu.help_center"), "Центр помощи");
+        assert_eq!(t("ru", "menu.faq"), "Частые вопросы");
+        assert_eq!(t("xx", "menu.support"), "Murojaat yuborish");
+    }
 }

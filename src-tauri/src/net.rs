@@ -159,6 +159,26 @@ pub fn is_newer(candidate: &str, current: &str) -> bool {
     false
 }
 
+/// «Yordam» menyusi bandlari → serverdagi sahifa yo'li: yordam markazi, ko'p beriladigan savollar, murojaat yuborish.
+/// Murojaatga qaysi sahifadan yozilgani `from` bilan uzatiladi (veb Support.vue uni kontekstga yozadi).
+pub fn help_path(id: &str, current: Option<&str>) -> Option<String> {
+    match id {
+        "help" => Some("/help".into()),
+        "faq" => Some("/yordam/kop-beriladigan-savollar".into()),
+        "support" => {
+            let from = current.filter(|p| p.starts_with('/') && !p.starts_with("//") && !p.starts_with("/support") && *p != "/");
+            Some(match from {
+                Some(p) => {
+                    let p: String = p.chars().take(300).collect();
+                    format!("/support?from={}", url::form_urlencoded::byte_serialize(p.as_bytes()).collect::<String>())
+                }
+                None => "/support".into(),
+            })
+        }
+        _ => None,
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -203,5 +223,17 @@ mod tests {
         assert_eq!(download_url_for("https://edux.uz", "macos", false), "https://edux.uz/download/macos");
         assert_eq!(download_url_for("https://edux.uz", "linux", true), "https://edux.uz/download/linux");
         assert_eq!(download_url_for("http://10.0.0.5:8000", "linux", false), "http://10.0.0.5:8000/download/linux/deb");
+    }
+
+    #[test]
+    fn help_menu_paths() {
+        assert_eq!(help_path("help", None).as_deref(), Some("/help"));
+        assert_eq!(help_path("faq", Some("/crm")).as_deref(), Some("/yordam/kop-beriladigan-savollar"));
+        assert_eq!(help_path("support", None).as_deref(), Some("/support"));
+        assert_eq!(help_path("support", Some("/")).as_deref(), Some("/support"));
+        assert_eq!(help_path("support", Some("/support/t/abc")).as_deref(), Some("/support"));
+        assert_eq!(help_path("support", Some("/crm/payments?tab=debt")).as_deref(), Some("/support?from=%2Fcrm%2Fpayments%3Ftab%3Ddebt"));
+        assert_eq!(help_path("support", Some("//evil.com")).as_deref(), Some("/support"));
+        assert_eq!(help_path("other", None), None);
     }
 }

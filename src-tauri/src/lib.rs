@@ -525,6 +525,9 @@ fn build_menu(app: &AppHandle) -> tauri::Result<Menu<tauri::Wry>> {
 
     let help_menu = SubmenuBuilder::new(app, l("menu.help"))
         .item(&item("help", "menu.help_center", Some("F1"))?)
+        .item(&item("faq", "menu.faq", None)?)
+        .item(&item("support", "menu.support", None)?)
+        .separator()
         .item(&item("about2", "menu.about", None)?)
         .build()?;
 
@@ -567,15 +570,21 @@ fn on_menu(app: &AppHandle, id: &str) {
             let app = app.clone();
             std::thread::spawn(move || check_updates(&app, true));
         }
-        "help" => {
-            if let (Some(w), Some(server)) = (main_window(app), state.server()) {
-                let on_server = w.url().map(|u| state.on_site(&u)).unwrap_or(false);
-                if on_server {
-                    let _ = w.eval("window.__eduxNavigate && window.__eduxNavigate('/help')");
-                } else if let Ok(url) = Url::parse(&format!("{server}/help")) {
-                    *state.pending_path.lock().unwrap() = Some(url.path().to_string());
-                    show_local(&w, "boot");
-                }
+        "help" | "faq" | "support" => {
+            let Some(w) = main_window(app) else { return };
+            let current = w.url().ok().filter(|u| state.on_site(u));
+            let from = current.as_ref().map(|u| match u.query() {
+                Some(q) => format!("{}?{q}", u.path()),
+                None => u.path().to_string(),
+            });
+            let Some(path) = net::help_path(id, from.as_deref()) else { return };
+            let _ = w.set_focus();
+            if current.is_some() {
+                let _ = w.eval(format!("window.__eduxNavigate && window.__eduxNavigate({})", serde_json::json!(path)));
+            } else if state.server().is_some() {
+                // Server sahifasi ochilmagan (aloqa yo'q yoki sozlamalar) — ulanganda shu yo'lga o'tiladi.
+                *state.pending_path.lock().unwrap() = Some(path);
+                show_local(&w, "boot");
             }
         }
         "reload" => {

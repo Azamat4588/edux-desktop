@@ -347,6 +347,8 @@ button { font: inherit; }
 
 .foot { color: var(--text-3); font-size: var(--fs-xs); }
 
+.help-links { margin: 1rem 0 0; color: var(--text-2); font-size: var(--fs-sm); display: flex; flex-wrap: wrap; gap: 0.25rem 0.5rem; align-items: baseline; }
+
 @media (max-width: 30rem) {
   .card { padding: 1.5rem 1.25rem 1.25rem; }
   .card-foot { margin: 1.25rem -1.25rem -1.25rem; padding: 0.75rem 1.25rem; }

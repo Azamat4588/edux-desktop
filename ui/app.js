@@ -38,6 +38,9 @@
             auto_online: 'Internet qaytishi bilan o\'zi qayta ulanadi',
             tech_details: 'Texnik ma\'lumot (yordam uchun)',
             version: 'EduX {v} · kompyuter ilovasi',
+            help_title: 'Yordam:',
+            help_problems: 'Muammolar va yechimlar',
+            help_desktop: 'Kompyuter ilovasi',
         },
         ru: {
             boot_title: 'EduX открывается',
@@ -76,6 +79,9 @@
             auto_online: 'Подключится сам, как только появится интернет',
             tech_details: 'Технические сведения (для поддержки)',
             version: 'EduX {v} · приложение для компьютера',
+            help_title: 'Помощь:',
+            help_problems: 'Проблемы и решения',
+            help_desktop: 'Приложение для компьютера',
         },
         en: {
             boot_title: 'Opening EduX',
@@ -114,6 +120,9 @@
             auto_online: 'Will reconnect by itself once the internet is back',
             tech_details: 'Technical details (for support)',
             version: 'EduX {v} · desktop app',
+            help_title: 'Help:',
+            help_problems: 'Problems and solutions',
+            help_desktop: 'Desktop app',
         },
     };
 
@@ -341,6 +350,14 @@
     });
     $('retry').addEventListener('click', () => { retryStep = 0; boot(); });
     $('change').addEventListener('click', () => openSettings());
+    // Ochiq yordam markazi maqolasi brauzerda: <server>/yordam/<slug>?lang=..
+    document.querySelectorAll('[data-help]').forEach((el) => {
+        el.addEventListener('click', () => {
+            const server = String((settings && (settings.server || settings.default_server)) || '').replace(/\/+$/, '');
+            if (!server) return;
+            invoke('open_external', { url: `${server}/yordam/${el.dataset.help}?lang=${lang}` }).catch(() => {});
+        });
+    });
 
     async function start() {
         settings = await invoke('get_settings');

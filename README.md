@@ -29,12 +29,18 @@ Linux — WebKitGTK). O'rnatuvchi hajmi kichik (3–12 MB), alohida brauzer qo's
   (macOS birinchi marta tizim ruxsatini so'raydi).
 - **Deep link:** `edux://open?path=/students/5` — ilovani ochadi va shu sahifaga o'tadi (uchala OS da sxema ro'yxatdan o'tadi).
 - **Menyu:** Qayta yuklash (Ctrl+R), Orqaga/Oldinga, Kattalashtirish/Kichiklashtirish/Asl o'lcham (Ctrl +/−/0),
-  To'liq ekran, Kengaytirilgan → Server manzili…, Brauzerda ochish, Yordam markazi (F1 → `<server>/help`),
-  Yangilanishni tekshirish, EduX haqida (ilova va server versiyasi).
+  To'liq ekran, Kengaytirilgan → Server manzili…, Brauzerda ochish, Yangilanishni tekshirish, EduX haqida (ilova va
+  server versiyasi). **Yordam** (1.2.0): «Yordam markazi» (F1 → `<server>/help`), «Ko'p beriladigan savollar»
+  (`/yordam/kop-beriladigan-savollar`), «Murojaat yuborish» (`/support?from=<joriy sahifa>`). Server sahifasi ochiq
+  bo'lmasa (aloqa yo'q) — ulangach shu sahifaga o'tiladi.
+- **Murojaat konteksti** (1.2.0, server 1.38): `POST /api/v1/public/support` ga ilova `context[app]` =
+  `windows|macos|linux` va `context[app_version]` qo'shadi (JSON va rasm bilan yuborilgan FormData) — veb sahifa
+  o'zi `web` deb yozardi.
 - **Internet yo'q / server ochilmasa** — tushunarli sahifa: nima bo'ldi («Internet aloqasi yo'q», «Server bilan aloqa yo'q»
   yoki «Bu manzilda EduX topilmadi»), holat ro'yxati (Internet — ulangan/ulanmagan, Server — javob bermadi), katta
   «Qayta urinish» tugmasi. Ilova o'zi ham qayta urinadi (15, 30, keyin har 60 soniyada), internet qaytishi bilan darhol ulanadi.
-  «Texnik ma'lumot» — yordam uchun xato matni; pastida «Server manzilini o'zgartirish (kengaytirilgan)».
+  «Texnik ma'lumot» — yordam uchun xato matni; «Yordam: Muammolar va yechimlar · Kompyuter ilovasi» — ochiq yordam
+  markazi maqolalari brauzerda (`<server>/yordam/<slug>`); pastida «Server manzilini o'zgartirish (kengaytirilgan)».
   Ish vaqtida internet uzilsa (1.1.1) — sahifa tepasida «Internet aloqasi yo'q» belgisi (veb tokenlari bilan), sahifa
   yopilmaydi; aloqasiz F5/Ctrl+R sahifani WebView xato oynasiga almashtirmaydi.
 - **Skaner qurilmasi** (USB/Bluetooth QR yoki shtrix-kod, klaviatura rejimi) veb sahifadagidek ishlaydi: tugma hodisalari

@@ -1,66 +1,112 @@
 /*
  * EduX kompyuter ilovasining o'z ekranlari (yuklanish, aloqa yo'q, server manzili).
- * Tokenlar veb tizimdagi 1.35 «Daftar» dizayn tizimidan (resources/css/theme.css, palette.css):
- * Klassik shablon, Moviy asosiy rang, Onest shrifti. Tungi rejim — kompyuter sozlamasiga qarab.
- * Token nomlari veb bilan bir xil — yangilanish banneri (inject.js) shu sahifada ham, veb ichida ham to'g'ri chiziladi.
+ * 1.3.0: veb tizimning 1.40 «Daftar 2: hoshiya» dizayn tili (docs/design.md, resources/css/theme.css, landing.css):
+ *  - sahifa — daftar varag'i: nozik qator chiziqlari va chap chetda qizil hoshiya chizig'i;
+ *  - karta — oq varaq, diqqat kerak bo'lsa chap chetida holat rangidagi hoshiya;
+ *  - shrift: sarlavhalar Literata (kitobiy serif), qolgani Golos Text (lotin va kirill, o'zbekcha ʻ bor) — ilova ichida, internetsiz;
+ *  - ranglar: Klassik shablon + Moviy asosiy rang; tungi rejim — kompyuter sozlamasiga qarab («kechki daftar»).
+ * Token nomlari veb bilan bir xil (v2 nomlari va eski nomlar) — yangilanish xabari (inject.js) shu sahifada ham,
+ * veb ichida ham to'g'ri chiziladi.
  */
 
 @font-face {
-  font-family: 'Onest Variable';
+  font-family: 'Golos Text Variable';
   font-style: normal;
   font-display: swap;
-  font-weight: 100 900;
-  src: url(fonts/onest-cyrillic-ext-wght-normal.woff2) format('woff2-variations');
+  font-weight: 400 900;
+  src: url(fonts/golos-cyrillic-ext-wght-normal.woff2) format('woff2-variations');
   unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
 }
 @font-face {
-  font-family: 'Onest Variable';
+  font-family: 'Golos Text Variable';
   font-style: normal;
   font-display: swap;
-  font-weight: 100 900;
-  src: url(fonts/onest-cyrillic-wght-normal.woff2) format('woff2-variations');
+  font-weight: 400 900;
+  src: url(fonts/golos-cyrillic-wght-normal.woff2) format('woff2-variations');
   unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
 }
 @font-face {
-  font-family: 'Onest Variable';
+  font-family: 'Golos Text Variable';
   font-style: normal;
   font-display: swap;
-  font-weight: 100 900;
-  src: url(fonts/onest-latin-ext-wght-normal.woff2) format('woff2-variations');
+  font-weight: 400 900;
+  src: url(fonts/golos-latin-ext-wght-normal.woff2) format('woff2-variations');
   unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
 }
 @font-face {
-  font-family: 'Onest Variable';
+  font-family: 'Golos Text Variable';
   font-style: normal;
   font-display: swap;
-  font-weight: 100 900;
-  src: url(fonts/onest-latin-wght-normal.woff2) format('woff2-variations');
+  font-weight: 400 900;
+  src: url(fonts/golos-latin-wght-normal.woff2) format('woff2-variations');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Literata Variable';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 200 900;
+  src: url(fonts/literata-cyrillic-ext-wght-normal.woff2) format('woff2-variations');
+  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+@font-face {
+  font-family: 'Literata Variable';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 200 900;
+  src: url(fonts/literata-cyrillic-wght-normal.woff2) format('woff2-variations');
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+@font-face {
+  font-family: 'Literata Variable';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 200 900;
+  src: url(fonts/literata-latin-ext-wght-normal.woff2) format('woff2-variations');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: 'Literata Variable';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 200 900;
+  src: url(fonts/literata-latin-wght-normal.woff2) format('woff2-variations');
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
 
 :root {
   color-scheme: light;
-  --font-sans: 'Onest Variable', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif;
+  --font-sans: 'Golos Text Variable', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif;
+  --font-title: 'Literata Variable', Georgia, 'Times New Roman', serif;
 
-  /* Fon qatlamlari */
-  --canvas: #f5f7fb;
+  /* Varaq va sirtlar (v2 nomi = eski nomi) */
+  --paper: #f7f9fc;                 /* daftar varag'i (sovuq oq, krem emas) */
+  --canvas: var(--paper);
   --surface: #ffffff;
-  --surface-2: #f8f9fc;
+  --surface-2: #f6f8fc;
+  --raised: #ffffff;
   --surface-sunken: #edf1f7;
+  --sunken: var(--surface-sunken);
+  --rule: rgb(58 92 160 / 0.085);   /* daftar qatorlari */
 
-  /* Matn (oq va canvas fonida ≥ 4.5:1) */
+  /* Matn (varaq va kartada ≥ 4.5:1) */
   --text-1: #131c36;
   --text-2: #4f5a73;
   --text-3: #586379;
+  --ink: var(--text-1);
+  --muted: var(--text-2);
+  --subtle: var(--text-3);
   --text-on-accent: #ffffff;
 
-  /* Chegara */
+  /* Chiziq */
   --border: #e2e8f2;
   --border-strong: #cbd3e1;
+  --line: var(--border);
+  --line-strong: var(--border-strong);
   --divider: #edf1f7;
   --gray-400: #6a748a;
 
-  /* Asosiy rang — Moviy */
+  /* Asosiy rang — Moviy (ruchka) */
   --accent: #1f63f5;
   --accent-hover: #1650d4;
   --accent-strong: #1650d4;
@@ -68,17 +114,23 @@
   --accent-soft-2: #dce8ff;
   --accent-focus: #3478ff;
   --accent-ring: rgb(52 120 255 / 0.32);
+  --focus-ring: #3478ff;
 
-  /* Holat ranglari */
-  --success-fg: oklch(50.8% 0.118 165.612);
-  --success-bg: oklch(97.9% 0.021 166.113);
-  --success-line: oklch(90.5% 0.093 164.15);
-  --warning-fg: oklch(55.5% 0.163 48.998);
-  --warning-bg: oklch(98.7% 0.022 95.277);
-  --warning-line: oklch(92.4% 0.12 95.746);
-  --danger-fg: oklch(51.4% 0.222 16.935);
-  --danger-bg: oklch(96.9% 0.015 12.422);
-  --danger-line: oklch(89.2% 0.058 10.001);
+  /* Hoshiya — daftar chetidagi qizil chiziq (bezak; matnda --margin-text) */
+  --margin: #d7414a;
+  --margin-text: #b8323b;
+  --hoshiya: 4px;
+
+  /* Holat ranglari (docs/design.md jadvali) */
+  --success-fg: #007a55;
+  --success-bg: #ecfdf5;
+  --success-line: #a4f4cf;
+  --warning-fg: #bb4d00;
+  --warning-bg: #fffbeb;
+  --warning-line: #fee685;
+  --danger-fg: #c70036;
+  --danger-bg: #fff1f2;
+  --danger-line: #ffccd3;
 
   /* Burchak, soya, harakat */
   --r-sm: 0.5rem;
@@ -87,70 +139,88 @@
   --r-xl: 1.125rem;
   --r-full: 999px;
   --shadow-1: 0 1px 2px rgb(16 24 40 / 0.05);
-  --shadow-2: 0 1px 2px rgb(16 24 40 / 0.04), 0 6px 16px -4px rgb(16 24 40 / 0.08);
-  --shadow-3: 0 2px 6px rgb(16 24 40 / 0.06), 0 20px 40px -12px rgb(16 24 40 / 0.22);
+  --shadow-2: 0 1px 2px rgb(20 27 52 / 0.06), 0 22px 44px -26px rgb(20 27 52 / 0.34);
+  --shadow-3: 0 2px 4px rgb(20 27 52 / 0.05), 0 40px 70px -34px rgb(20 27 52 / 0.42);
   --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
+  --ease-out: var(--ease);
+  --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
   --dur-1: 120ms;
-  --dur-2: 200ms;
+  --dur-2: 180ms;
+  --dur-3: 260ms;
 
-  /* Tipografika */
+  /* Tipografika (≈1.2 shkala) */
   --fs-xs: 0.75rem;
   --fs-sm: 0.875rem;
   --fs-md: 1rem;
-  --fs-xl: 1.375rem;
+  --fs-lg: 1.125rem;
+  --fs-xl: 1.625rem;
   --control-h: 2.75rem;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
     color-scheme: dark;
-    --canvas: #0b1222;
-    --surface: #121a2c;
-    --surface-2: #162036;
-    --surface-sunken: #0e1628;
-    --text-1: #eef1f6;
-    --text-2: #a6afc3;
-    --text-3: #98a2b8;
-    --border: #243049;
-    --border-strong: #334160;
+    --paper: #0d1322;               /* kechki daftar */
+    --surface: #151f33;
+    --surface-2: #19243a;
+    --raised: #182238;
+    --surface-sunken: #0f1729;
+    --rule: rgb(140 170 230 / 0.06);
+    --text-1: #e8ecf5;
+    --text-2: #b4bdd0;
+    --text-3: #9aa4bb;
+    --border: #232e45;
+    --border-strong: #34415d;
     --divider: #1c2740;
     --gray-400: #7d88a1;
-    --accent-hover: #3478ff;
+    --accent: #3478ff;
+    --accent-hover: #5a92ff;
     --accent-strong: #8db4ff;
-    --accent-soft: color-mix(in oklab, #3478ff 13%, #111a2d);
-    --accent-soft-2: color-mix(in oklab, #3478ff 22%, #111a2d);
-    --success-fg: oklch(84.5% 0.143 164.978);
-    --success-bg: color-mix(in oklab, oklch(69.6% 0.17 162.48) 13%, #111a2d);
-    --success-line: color-mix(in oklab, oklch(69.6% 0.17 162.48) 34%, #111a2d);
-    --warning-fg: oklch(87.9% 0.169 91.605);
-    --warning-bg: color-mix(in oklab, oklch(76.9% 0.188 70.08) 13%, #111a2d);
-    --warning-line: color-mix(in oklab, oklch(76.9% 0.188 70.08) 34%, #111a2d);
-    --danger-fg: oklch(81% 0.117 11.638);
-    --danger-bg: color-mix(in oklab, oklch(64.5% 0.246 16.439) 13%, #111a2d);
-    --danger-line: color-mix(in oklab, oklch(64.5% 0.246 16.439) 34%, #111a2d);
+    --accent-soft: #162545;
+    --accent-soft-2: #1c3060;
+    --accent-ring: rgb(52 120 255 / 0.4);
+    --text-on-accent: #ffffff;
+    --margin: #ef6b72;
+    --margin-text: #f2858b;
+    --success-fg: #5ee9b5;
+    --success-bg: #142d38;
+    --success-line: #1f4a4a;
+    --warning-fg: #ffd230;
+    --warning-bg: #2c2b31;
+    --warning-line: #4a4232;
+    --danger-fg: #ffa1ad;
+    --danger-bg: #2f2234;
+    --danger-line: #4c2d3b;
     --shadow-1: 0 1px 0 rgb(255 255 255 / 0.02);
-    --shadow-2: 0 1px 0 rgb(255 255 255 / 0.03), 0 10px 24px -12px rgb(0 0 0 / 0.6);
-    --shadow-3: 0 24px 48px -12px rgb(0 0 0 / 0.7);
+    --shadow-2: 0 1px 0 rgb(0 0 0 / 0.25), 0 22px 44px -24px rgb(0 0 0 / 0.75);
+    --shadow-3: 0 2px 0 rgb(0 0 0 / 0.25), 0 40px 70px -30px rgb(0 0 0 / 0.8);
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  :root { --dur-1: 0ms; --dur-2: 0ms; }
-  .loader span { animation: none !important; opacity: 0.8; }
+  :root { --dur-1: 0ms; --dur-2: 0ms; --dur-3: 0ms; }
+  .pen-line::after, .view { animation: none !important; }
 }
 
 * { box-sizing: border-box; }
 html, body { height: 100%; margin: 0; }
 html { font-size: 16px; }
 body {
-  background: var(--canvas);
+  /* Daftar varag'i: 2rem qadamli nozik qatorlar + chap chetda qizil hoshiya. */
+  background:
+    linear-gradient(to right, transparent calc(var(--margin-x) - 1px), var(--margin) calc(var(--margin-x) - 1px), var(--margin) calc(var(--margin-x) + 1px), transparent calc(var(--margin-x) + 1px)) no-repeat,
+    repeating-linear-gradient(to bottom, transparent 0 calc(2rem - 1px), var(--rule) calc(2rem - 1px) 2rem),
+    var(--paper);
+  background-attachment: fixed;
   color: var(--text-1);
   font-family: var(--font-sans);
   font-size: var(--fs-sm);
   line-height: 1.55;
+  font-variant-numeric: tabular-nums;
   -webkit-font-smoothing: antialiased;
   -webkit-user-select: none;
   user-select: none;
+  --margin-x: 4.5rem;
 }
 [hidden] { display: none !important; }
 
@@ -160,66 +230,85 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 1.25rem;
-  padding: 2rem 1rem;
+  gap: 1.5rem;
+  padding: 2.5rem 1.25rem 2rem calc(var(--margin-x) + 1.25rem);
 }
 
-.brand { display: flex; align-items: center; gap: 0.625rem; }
+.brand { display: flex; align-items: center; gap: 0.75rem; width: 100%; max-width: 30rem; }
 .brand img { display: block; border-radius: 0.625rem; }
-.brand-name { font-size: 1.25rem; font-weight: 750; letter-spacing: -0.022em; }
+.brand-name { font-family: var(--font-title); font-size: 1.5rem; font-weight: 650; letter-spacing: -0.02em; }
 
-/* ---------- Karta (Klassik shablon) ---------- */
+/* ---------- Varaq (karta) ---------- */
 .card {
   position: relative;
   width: 100%;
-  max-width: 28rem;
+  max-width: 30rem;
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--r-xl);
   box-shadow: var(--shadow-2);
-  padding: 2rem 2rem 1.5rem;
+  padding: 2rem 2rem 1.5rem 2.25rem;
   overflow: hidden;
 }
-/* «Daftar» belgisi: diqqat kerak bo'lgan kartaning chap chetidagi rangli chiziq. */
+.view { animation: sheet-in var(--dur-3) var(--ease) both; }
+@keyframes sheet-in { from { opacity: 0; transform: translateY(6px); } }
+
+/* Hoshiya: diqqat kerak bo'lgan varaqning chap chetidagi rangli chiziq (veb: today-card, toast, xato maydon). */
 .card.tone::before {
   content: '';
   position: absolute;
   inset: 0 auto 0 0;
-  width: 4px;
+  width: var(--hoshiya);
   background: var(--tone-line, var(--accent));
 }
+.card.tone[data-tone="accent"] { --tone-fg: var(--accent-strong); --tone-bg: var(--accent-soft); --tone-line: var(--accent); }
 .card.tone[data-tone="danger"] { --tone-fg: var(--danger-fg); --tone-bg: var(--danger-bg); --tone-line: var(--danger-fg); }
 .card.tone[data-tone="warning"] { --tone-fg: var(--warning-fg); --tone-bg: var(--warning-bg); --tone-line: var(--warning-fg); }
 
 .title {
-  margin: 0 0 0.375rem;
+  margin: 0 0 0.5rem;
+  font-family: var(--font-title);
   font-size: var(--fs-xl);
-  line-height: 1.2;
-  font-weight: 750;
-  letter-spacing: -0.022em;
+  line-height: 1.15;
+  font-weight: 620;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
 }
-.lead { margin: 0; color: var(--text-2); font-size: 0.9375rem; }
+.lead { margin: 0; color: var(--text-2); font-size: 0.9375rem; text-wrap: pretty; }
 .lead.small { margin-top: 0.75rem; font-size: var(--fs-sm); color: var(--text-3); }
 .host { color: var(--text-1); font-weight: 600; word-break: break-all; }
 
-/* ---------- Yuklanish ---------- */
-#view-boot { text-align: center; padding-top: 2.25rem; padding-bottom: 2rem; }
-.loader { display: flex; justify-content: center; gap: 0.5rem; margin: 0 auto 1.25rem; height: 0.75rem; }
-.loader span {
-  width: 0.75rem; height: 0.75rem; border-radius: var(--r-full);
-  background: var(--accent);
-  animation: pulse 1s var(--ease) infinite;
+/* ---------- Yuklanish (birinchi ochilish ham) ---------- */
+#view-boot { padding-top: 2.25rem; padding-bottom: 2rem; }
+/* Ruchka chizig'i: qator ustida ko'k chiziq chapdan o'ngga yoziladi (bezak harakati emas — kutish belgisi). */
+.pen-line {
+  position: relative;
+  height: 3px;
+  margin: 1.5rem 0 0.25rem;
+  border-radius: var(--r-full);
+  background: var(--divider);
+  overflow: hidden;
 }
-.loader span:nth-child(2) { animation-delay: 0.15s; }
-.loader span:nth-child(3) { animation-delay: 0.3s; }
-@keyframes pulse {
-  0%, 100% { opacity: 0.25; transform: scale(0.8); }
-  40% { opacity: 1; transform: scale(1); }
+.pen-line::after {
+  content: '';
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 40%;
+  border-radius: inherit;
+  background: var(--accent);
+  animation: pen 1.4s var(--ease-in-out) infinite;
+}
+@keyframes pen {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(250%); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .pen-line::after { width: 100%; opacity: 0.55; transform: none; }
 }
 
 /* ---------- Aloqa yo'q ---------- */
 .icon-tile {
-  width: 3rem; height: 3rem; margin-bottom: 1rem;
+  width: 3rem; height: 3rem; margin-bottom: 1.125rem;
   display: grid; place-items: center;
   border-radius: var(--r-lg);
   background: var(--tone-bg, var(--accent-soft));
@@ -243,10 +332,11 @@ body {
 .status-value[data-state="ok"] { color: var(--success-fg); }
 .status-value[data-state="bad"] { color: var(--danger-fg); }
 .status-value[data-state="warn"] { color: var(--warning-fg); }
-.dot { width: 0.625rem; height: 0.625rem; flex: none; border-radius: var(--r-full); background: var(--gray-400); }
-.dot[data-state="ok"] { background: var(--success-fg); }
-.dot[data-state="bad"] { background: var(--danger-fg); }
-.dot[data-state="warn"] { background: var(--warning-fg); }
+/* Holat — nuqtali chip (veb: .chip) */
+.dot { width: 0.5rem; height: 0.5rem; flex: none; border-radius: var(--r-full); background: var(--gray-400); }
+.dot[data-state="ok"] { background: var(--success-fg); box-shadow: 0 0 0 3px var(--success-bg); }
+.dot[data-state="bad"] { background: var(--danger-fg); box-shadow: 0 0 0 3px var(--danger-bg); }
+.dot[data-state="warn"] { background: var(--warning-fg); box-shadow: 0 0 0 3px var(--warning-bg); }
 
 .auto { margin: 0.625rem 0 0; text-align: center; color: var(--text-3); font-size: var(--fs-xs); min-height: 1.1em; }
 
@@ -260,24 +350,25 @@ body {
 }
 
 .card-foot {
-  margin: 1.5rem -2rem -1.5rem;
-  padding: 0.875rem 2rem;
+  margin: 1.5rem -2rem -1.5rem -2.25rem;
+  padding: 0.875rem 2rem 0.875rem 2.25rem;
   border-top: 1px solid var(--divider);
   background: var(--surface-2);
   text-align: center;
 }
 
-/* ---------- Sozlamalar ---------- */
-.eyebrow { margin-bottom: 0.75rem; }
+/* ---------- Sozlamalar (kengaytirilgan) ---------- */
+.eyebrow { margin-bottom: 0.875rem; }
 .badge {
-  display: inline-flex; align-items: center;
-  padding: 0.125rem 0.625rem;
+  display: inline-flex; align-items: center; gap: 0.375rem;
+  padding: 0.1875rem 0.625rem;
   border-radius: var(--r-full);
   background: var(--warning-bg);
   color: var(--warning-fg);
   border: 1px solid var(--warning-line);
   font-size: var(--fs-xs); font-weight: 600;
 }
+.badge::before { content: ''; width: 0.375rem; height: 0.375rem; border-radius: var(--r-full); background: currentColor; }
 form { margin-top: 1.5rem; }
 .field + .field { margin-top: 1.125rem; }
 .field-label { display: block; margin-bottom: 0.375rem; font-size: var(--fs-sm); font-weight: 600; color: var(--text-1); }
@@ -297,7 +388,8 @@ form { margin-top: 1.5rem; }
 }
 .field-input:hover { border-color: var(--gray-400); }
 .field-input:focus { border-color: var(--accent-focus); box-shadow: 0 0 0 4px var(--accent-ring); }
-.field-input[aria-invalid="true"] { border-color: var(--danger-fg); }
+/* Xato maydon — chap chetida hoshiya (veb bilan bir til) */
+.field-input[aria-invalid="true"] { border-color: var(--danger-fg); box-shadow: inset var(--hoshiya) 0 0 var(--danger-fg); }
 select.field-input {
   appearance: none; -webkit-appearance: none;
   padding-right: 2.5rem;
@@ -322,15 +414,15 @@ button { font: inherit; }
   border: 1px solid transparent;
   font-size: var(--fs-sm); font-weight: 600; line-height: 1.25;
   cursor: pointer;
-  transition: background-color var(--dur-1) var(--ease), border-color var(--dur-1) var(--ease);
+  transition: background-color var(--dur-1) var(--ease), border-color var(--dur-1) var(--ease), transform var(--dur-1) var(--ease);
 }
+.btn-primary:active, .btn-secondary:active { transform: scale(0.97); }
 .btn-primary {
   background: var(--accent); color: var(--text-on-accent);
-  box-shadow: 0 1px 2px rgb(16 24 40 / 0.12), inset 0 1px 0 rgb(255 255 255 / 0.12);
+  box-shadow: 0 1px 2px rgb(16 24 40 / 0.12);
 }
 .btn-primary:hover { background: var(--accent-hover); }
-.btn-primary:active { filter: brightness(0.95); }
-.btn-primary:disabled { opacity: 0.6; cursor: progress; }
+.btn-primary:disabled { opacity: 0.6; cursor: progress; transform: none; }
 .btn-primary.wide { width: 100%; }
 .btn-secondary { background: var(--surface); color: var(--text-1); border-color: var(--border-strong); box-shadow: var(--shadow-1); }
 .btn-secondary:hover { background: var(--surface-2); border-color: var(--gray-400); }
@@ -339,17 +431,21 @@ button { font: inherit; }
   font-size: var(--fs-sm); font-weight: 600;
   color: var(--accent-strong);
   text-decoration: underline; text-decoration-color: transparent; text-underline-offset: 3px;
+  transition: text-decoration-color var(--dur-1) var(--ease);
 }
 .link-quiet { color: var(--text-2); font-weight: 500; font-size: 0.8125rem; }
 .link-action:hover, .link-quiet:hover { text-decoration-color: currentColor; color: var(--accent-strong); }
-:focus-visible { outline: 2px solid var(--accent-focus); outline-offset: 2px; border-radius: 4px; }
+:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 2px; border-radius: 4px; }
 .field-input:focus-visible { outline: none; }
 
-.foot { color: var(--text-3); font-size: var(--fs-xs); }
+.foot { width: 100%; max-width: 30rem; color: var(--text-3); font-size: var(--fs-xs); }
 
 .help-links { margin: 1rem 0 0; color: var(--text-2); font-size: var(--fs-sm); display: flex; flex-wrap: wrap; gap: 0.25rem 0.5rem; align-items: baseline; }
 
-@media (max-width: 30rem) {
-  .card { padding: 1.5rem 1.25rem 1.25rem; }
-  .card-foot { margin: 1.25rem -1.25rem -1.25rem; padding: 0.75rem 1.25rem; }
+/* Tor oyna: hoshiya chetga suriladi, varaq butun kenglikda. */
+@media (max-width: 40rem) {
+  body { --margin-x: 1.25rem; }
+  .shell { padding: 1.5rem 1rem 1.5rem 2rem; }
+  .card { padding: 1.5rem 1.25rem 1.25rem 1.5rem; }
+  .card-foot { margin: 1.25rem -1.25rem -1.25rem -1.5rem; padding: 0.75rem 1.25rem; }
 }

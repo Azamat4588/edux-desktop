@@ -15,10 +15,10 @@
     </header>
 
     <!-- Yuklanish: serverga ulanmoqda -->
-    <section id="view-boot" class="card view" aria-live="polite">
-      <div class="loader" aria-hidden="true"><span></span><span></span><span></span></div>
+    <section id="view-boot" class="card view tone" data-tone="accent" aria-live="polite" aria-busy="true">
       <h1 class="title" data-t="boot_title"></h1>
       <p class="lead"><span data-t="boot_text"></span> <b class="host" id="boot-server"></b></p>
+      <div class="pen-line" aria-hidden="true"></div>
       <p class="lead small" id="boot-slow" data-t="boot_slow" hidden></p>
     </section>
 
@@ -70,7 +70,7 @@
     </section>
 
     <!-- Kengaytirilgan: server manzili va til -->
-    <section id="view-settings" class="card view" hidden>
+    <section id="view-settings" class="card view tone" data-tone="warning" hidden>
       <div class="eyebrow"><span class="badge" data-t="advanced"></span></div>
       <h1 class="title" data-t="settings_title"></h1>
       <p class="lead" data-t="settings_hint"></p>

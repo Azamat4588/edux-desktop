@@ -55,9 +55,22 @@ Linux — WebKitGTK). O'rnatuvchi hajmi kichik (3–12 MB), alohida brauzer qo's
   **doimiy havolani** brauzerda ochadi: `<server>/download/windows|macos|linux` (Linux'da .deb dan o'rnatilgan bo'lsa —
   `/download/linux/deb`); server faylni o'zi beradi yoki GitHub relizga yo'naltiradi. Platforma yashirilgan, versiya
   kiritilmagan yoki endpoint yo'q (404) bo'lsa — hech narsa chiqmaydi.
-- **Dizayn** — veb tizimning 1.35 «Daftar» dizayn tizimi: ilovaning o'z ekranlari (yuklanish, aloqa yo'q, server manzili)
-  bir xil tokenlar (rang, matn, chegara, burchak, soya), Onest shrifti (ilova ichida, internetsiz ham), tungi rejim —
-  kompyuter sozlamasiga qarab. Yangilanish xabari veb tokenlaridan foydalanadi — tashkilot rangi va tungi rejimga moslashadi.
+- **Dizayn** (1.3.0) — veb tizimning 1.40 «Daftar 2: hoshiya» dizayn tili: ilovaning o'z ekranlari (yuklanish /
+  birinchi ochilish, aloqa yo'q, server manzili) — daftar varag'i (nozik qatorlar, chap chetda qizil hoshiya chizig'i),
+  oq varaq-karta, diqqat kerak bo'lsa chap chetida holat rangidagi hoshiya (yuklanish — asosiy rang, aloqa yo'q — qizil,
+  internet yo'q — sariq, kengaytirilgan sozlama — sariq). Sarlavhalar **Literata**, matn **Golos Text** (lotin va kirill,
+  o'zbekcha ʻ bor) — ilova ichida, internetsiz ham (`ui/fonts`, OFL). Ranglar `docs/design.md` jadvalidan (Klassik,
+  Moviy; tungi rejim — «kechki daftar», kompyuter sozlamasiga qarab). Yuklanishda ko'k «ruchka chizig'i», harakatni
+  kamaytirish yoqilgan bo'lsa — harakatsiz. Yangilanish xabari va «Internet aloqasi yo'q» belgisi veb v2 tokenlaridan
+  (`--raised`, `--ink`, `--line`, `--hoshiya`; eski serverda eski nomlar, keyin Klassik qiymatlari) — tashkilot
+  shabloni, rangi va tungi rejimiga moslashadi. Ilova ikonkalari o'zgarmagan.
+
+| Kunduzgi | Tungi |
+|---|---|
+| ![Server bilan aloqa yo'q — kunduzgi](docs/screens/aloqa-yoq.jpg) | ![Yuklanish va yangilanish xabari — tungi](docs/screens/yuklanish-tungi.jpg) |
+| ![Server manzili (kengaytirilgan)](docs/screens/server-manzili.jpg) | ![Internet aloqasi yo'q — tungi](docs/screens/internet-yoq-tungi.jpg) |
+
+Rasmlar `ui/index.html` ni brauzerda (Playwright, Tauri IPC soxtasi bilan) ochib olingan.
 
 Javob namunasi:
 
@@ -168,7 +181,8 @@ Belgilar (ikonka) `src-tauri/icons/source.png` dan (mobil ilova logotipi asosida
 
 ```
 ui/                     ilovaning o'z sahifasi: yuklanish, aloqa yo'q, kengaytirilgan server manzili (uz/ru/en)
-ui/fonts/               Onest shrifti (OFL), ekranlar internetsiz ham to'g'ri chiziladi
+ui/fonts/               Golos Text va Literata shriftlari (OFL), ekranlar internetsiz ham to'g'ri chiziladi
+docs/screens/           README rasmlari (ilova ekranlari, kunduzgi/tungi)
 src-tauri/src/lib.rs    oyna, menyu, navigatsiya, yuklab olish, ruxsatlar, deep link, yangilanishlar
 src-tauri/src/inject.js veb ilova ichiga qo'shiladigan ko'prik (blob yuklab olish, print, Notification, window.open)
 src-tauri/src/settings.rs  sozlamalar, manzilni normallashtirish

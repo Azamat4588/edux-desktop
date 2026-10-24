@@ -14,8 +14,9 @@
     }
 
     // Yangilanish xabari (Rust tomondan chaqiriladi; ilovaning o'z sahifasida ham ishlaydi).
-    // Ranglar veb tizimning 1.35 tokenlaridan (--surface, --accent, ...): asosiy rang va tungi rejim o'zi mos keladi;
-    // tokenlar bo'lmasa (eski server) — Klassik/Moviy qiymatlari. Shadow DOM — sahifa uslublari aralashmaydi.
+    // Ranglar veb tizimning 1.40 «Daftar 2: hoshiya» tokenlaridan (--raised, --ink, --accent, --hoshiya ...): asosiy rang,
+    // shablon va tungi rejim o'zi mos keladi; tokenlar bo'lmasa (eski server) — eski nomlar, keyin Klassik/Moviy qiymatlari.
+    // Shadow DOM — sahifa uslublari aralashmaydi.
     window.__eduxUpdate = function (info) {
         const show = function () {
             if (document.getElementById('edux-update-banner')) return;
@@ -26,32 +27,33 @@
             const css = ''
                 + ':host{all:initial}'
                 + '.box{position:relative;box-sizing:border-box;width:360px;max-width:calc(100vw - 32px);overflow:hidden;'
-                + 'background:var(--surface,#fff);color:var(--text-1,#131c36);border:1px solid var(--border,#e2e8f2);'
+                + 'background:var(--raised,var(--surface,#fff));color:var(--ink,var(--text-1,#131c36));border:1px solid var(--line,var(--border,#e2e8f2));'
                 + 'border-radius:var(--r-lg,14px);box-shadow:var(--shadow-3,0 2px 6px rgb(16 24 40/.06),0 20px 40px -12px rgb(16 24 40/.22));'
-                + 'padding:16px 16px 16px 20px;font:14px/1.5 var(--font-sans,"Onest Variable",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif);'
-                + 'animation:in var(--dur-3,320ms) var(--ease,cubic-bezier(.2,.7,.2,1))}'
-                + '.box:before{content:"";position:absolute;inset:0 auto 0 0;width:4px;background:var(--accent,#1f63f5)}'
-                + '@keyframes in{from{opacity:0;transform:translateY(12px)}}'
+                + 'padding:16px 16px 16px 20px;font:14px/1.5 var(--font-sans,"Golos Text Variable",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif);'
+                + 'animation:in var(--dur-3,260ms) var(--ease-spring,var(--ease,cubic-bezier(.2,.7,.2,1)))}'
+                + '.box:before{content:"";position:absolute;inset:0 auto 0 0;width:var(--hoshiya,4px);background:var(--accent,#1f63f5)}'
+                + '@keyframes in{from{opacity:0;transform:translateY(var(--motion-shift,6px))}}'
                 + '@media (prefers-reduced-motion:reduce){.box{animation:none}}'
                 + '.head{display:flex;gap:12px;align-items:flex-start}'
                 + '.tile{flex:none;width:40px;height:40px;border-radius:var(--r-md,10px);display:grid;place-items:center;'
                 + 'background:var(--accent-soft,#eef4ff);color:var(--accent-strong,#1650d4)}'
                 + '.txt{flex:1;min-width:0}'
                 + '.title{font-weight:700;font-size:15px;line-height:1.3;margin:1px 0 2px}'
-                + '.sub{color:var(--text-2,#4f5a73);font-size:13px}'
+                + '.sub{color:var(--muted,var(--text-2,#4f5a73));font-size:13px}'
                 + '.x{flex:none;margin:-6px -6px 0 0;width:32px;height:32px;border:0;border-radius:var(--r-sm,8px);background:transparent;'
-                + 'color:var(--text-3,#586379);cursor:pointer;display:grid;place-items:center}'
-                + '.x:hover{background:var(--surface-2,#f8f9fc);color:var(--text-1,#131c36)}'
+                + 'color:var(--subtle,var(--text-3,#586379));cursor:pointer;display:grid;place-items:center}'
+                + '.x:hover{background:var(--surface-2,#f8f9fc);color:var(--ink,var(--text-1,#131c36))}'
                 + '.notes{margin:12px 0 0;padding:8px 12px;border-radius:var(--r-sm,8px);background:var(--surface-2,#f8f9fc);'
-                + 'color:var(--text-2,#4f5a73);font-size:13px;white-space:pre-line;max-height:96px;overflow:auto}'
+                + 'color:var(--muted,var(--text-2,#4f5a73));font-size:13px;white-space:pre-line;max-height:96px;overflow:auto}'
                 + '.row{display:flex;gap:8px;justify-content:flex-end;margin-top:14px}'
                 + 'button.b{font:inherit;font-weight:600;font-size:14px;min-height:40px;padding:0 16px;border-radius:var(--r-md,10px);cursor:pointer;'
                 + 'border:1px solid transparent;display:inline-flex;align-items:center;gap:6px}'
-                + '.later{background:var(--surface,#fff);color:var(--text-1,#131c36);border-color:var(--border-strong,#cbd3e1)!important}'
+                + '.later{background:var(--surface,#fff);color:var(--ink,var(--text-1,#131c36));border-color:var(--line-strong,var(--border-strong,#cbd3e1))!important}'
                 + '.later:hover{background:var(--surface-2,#f8f9fc)}'
                 + '.dl{background:var(--accent,#1f63f5);color:var(--text-on-accent,#fff)}'
                 + '.dl:hover{background:var(--accent-hover,#1650d4)}'
-                + 'button:focus-visible{outline:2px solid var(--color-indigo-500,#3478ff);outline-offset:2px}';
+                + 'button:active{transform:scale(var(--press-scale,.97))}'
+                + 'button:focus-visible{outline:2px solid var(--focus-ring,#3478ff);outline-offset:2px}';
             const arrow = '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" '
                 + 'stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11"/><path d="m7 10 5 5 5-5"/><path d="M5 20h14"/></svg>';
             const cross = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" '
@@ -214,7 +216,7 @@
         };
     }
 
-    // Internet uzilsa — sahifa tepasida kichik ogohlantirish (veb tokenlari: --warning-*), qaytsa — yo'qoladi.
+    // Internet uzilsa — sahifa tepasida kichik ogohlantirish (veb tokenlari: --warning-*, chap chetida hoshiya), qaytsa — yo'qoladi.
     // Aloqasiz F5 / Ctrl+R sahifani WebView'ning «sahifa ochilmadi» oynasiga almashtirib yubormasin.
     let offlineHost = null;
     function showOffline() {
@@ -225,9 +227,10 @@
         const root = offlineHost.attachShadow ? offlineHost.attachShadow({ mode: 'open' }) : offlineHost;
         const style = document.createElement('style');
         style.textContent = ':host{all:initial}'
-            + '.bar{box-sizing:border-box;display:flex;gap:10px;align-items:center;padding:10px 14px;border-radius:var(--r-md,10px);'
+            + '.bar{position:relative;overflow:hidden;box-sizing:border-box;display:flex;gap:10px;align-items:center;padding:10px 14px 10px 18px;border-radius:var(--r-md,10px);'
             + 'background:var(--warning-bg,#fffbeb);color:var(--warning-fg,#b45309);border:1px solid var(--warning-line,#fde68a);'
-            + 'box-shadow:var(--shadow-3,0 8px 24px -8px rgb(16 24 40/.25));font:600 13.5px/1.4 var(--font-sans,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif)}';
+            + 'box-shadow:var(--shadow-3,0 8px 24px -8px rgb(16 24 40/.25));font:600 13.5px/1.4 var(--font-sans,"Golos Text Variable",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif)}'
+            + '.bar:before{content:"";position:absolute;inset:0 auto 0 0;width:var(--hoshiya,4px);background:currentColor}';
         const bar = document.createElement('div');
         bar.className = 'bar';
         bar.setAttribute('role', 'status');

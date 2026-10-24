@@ -899,4 +899,29 @@ mod tests {
         assert!(!INJECT.contains("XMLHttpRequest.prototype.send"));
         assert!(INJECT.contains("window.__EDUX_DESKTOP__"));
     }
+
+    #[test]
+    fn ui_shriftlari_ilova_ichida_va_litsenziyasi_bilan() {
+        // 1.3.0: Golos Text + Literata (veb 1.40 dizayni) — internetsiz ham chiziladi; har shrift fayli va OFL matni bor.
+        const CSS: &str = include_str!("../../ui/style.css");
+        let fonts = std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("../ui/fonts");
+        let mut n = 0;
+        for part in CSS.split("url(fonts/").skip(1) {
+            let name = part.split(')').next().unwrap_or_default();
+            assert!(fonts.join(name).is_file(), "shrift fayli yo'q: {name}");
+            n += 1;
+        }
+        assert_eq!(n, 8);
+        assert!(fonts.join("OFL-golos-text.txt").is_file());
+        assert!(fonts.join("OFL-literata.txt").is_file());
+        assert!(!CSS.contains("Onest"));
+    }
+
+    #[test]
+    fn yangilanish_xabari_v2_tokenlari_zaxira_bilan() {
+        // Yangi server — v2 tokenlari, eski server — eski nomlar, ular ham bo'lmasa — Klassik qiymatlari.
+        assert!(INJECT.contains("var(--raised,var(--surface,#fff))"));
+        assert!(INJECT.contains("var(--ink,var(--text-1,#131c36))"));
+        assert!(INJECT.contains("width:var(--hoshiya,4px)"));
+    }
 }

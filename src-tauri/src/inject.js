@@ -14,8 +14,9 @@
     }
 
     // Yangilanish xabari (Rust tomondan chaqiriladi; ilovaning o'z sahifasida ham ishlaydi).
-    // Ranglar veb tizimning 1.40 «Daftar 2: hoshiya» tokenlaridan (--raised, --ink, --accent, --hoshiya ...): asosiy rang,
-    // shablon va tungi rejim o'zi mos keladi; tokenlar bo'lmasa (eski server) — eski nomlar, keyin Klassik/Moviy qiymatlari.
+    // Ranglar veb tizimning 1.41 «Koshin» tokenlaridan (--raised, --ink, --accent, --font-display ...): asosiy rang,
+    // shablon va tungi rejim o'zi mos keladi; tokenlar bo'lmasa (eski server) — eski nomlar, keyin Koshin/Feruza qiymatlari.
+    // Belgi — to'liq rangli plitka, muhr kabi bosiladi (veb toast); chap chiziq (1.40 hoshiya) yo'q.
     // Shadow DOM — sahifa uslublari aralashmaydi.
     window.__eduxUpdate = function (info) {
         const show = function () {
@@ -27,33 +28,35 @@
             const css = ''
                 + ':host{all:initial}'
                 + '.box{position:relative;box-sizing:border-box;width:360px;max-width:calc(100vw - 32px);overflow:hidden;'
-                + 'background:var(--raised,var(--surface,#fff));color:var(--ink,var(--text-1,#131c36));border:1px solid var(--line,var(--border,#e2e8f2));'
-                + 'border-radius:var(--r-lg,14px);box-shadow:var(--shadow-3,0 2px 6px rgb(16 24 40/.06),0 20px 40px -12px rgb(16 24 40/.22));'
-                + 'padding:16px 16px 16px 20px;font:14px/1.5 var(--font-sans,"Golos Text Variable",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif);'
-                + 'animation:in var(--dur-3,260ms) var(--ease-spring,var(--ease,cubic-bezier(.2,.7,.2,1)))}'
-                + '.box:before{content:"";position:absolute;inset:0 auto 0 0;width:var(--hoshiya,4px);background:var(--accent,#1f63f5)}'
-                + '@keyframes in{from{opacity:0;transform:translateY(var(--motion-shift,6px))}}'
-                + '@media (prefers-reduced-motion:reduce){.box{animation:none}}'
+                + 'background:var(--raised,var(--surface,#fff));color:var(--ink,var(--text-1,#111c3a));border:1px solid var(--line,var(--border,#dde5ec));'
+                + 'border-radius:var(--r-lg,14px);box-shadow:var(--shadow-3,0 4px 10px rgb(17 28 58/.06),0 28px 56px -16px rgb(17 28 58/.32));'
+                + 'padding:16px;font:14px/1.5 var(--font-sans,"Onest Variable","Commissioner Variable",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif);'
+                + 'animation:in var(--dur-3,280ms) var(--ease-spring,cubic-bezier(.34,1.5,.64,1))}'
+                + '@keyframes in{from{opacity:0;transform:translateY(var(--motion-shift,8px))}}'
+                + '@keyframes stamp{0%{opacity:0;transform:scale(1.5) rotate(-14deg)}55%{opacity:1;transform:scale(.94) rotate(2deg)}100%{opacity:1;transform:none}}'
+                + '@media (prefers-reduced-motion:reduce){.box,.tile{animation:none}}'
                 + '.head{display:flex;gap:12px;align-items:flex-start}'
                 + '.tile{flex:none;width:40px;height:40px;border-radius:var(--r-md,10px);display:grid;place-items:center;'
-                + 'background:var(--accent-soft,#eef4ff);color:var(--accent-strong,#1650d4)}'
+                + 'background:var(--accent,#00808b);color:var(--text-on-accent,#fff);animation:stamp 520ms var(--ease-spring,cubic-bezier(.34,1.5,.64,1)) 120ms both}'
                 + '.txt{flex:1;min-width:0}'
-                + '.title{font-weight:700;font-size:15px;line-height:1.3;margin:1px 0 2px}'
-                + '.sub{color:var(--muted,var(--text-2,#4f5a73));font-size:13px}'
+                + '.title{font-family:var(--font-display,"Commissioner Variable","Onest Variable",system-ui,sans-serif);font-weight:800;font-size:16px;'
+                + 'letter-spacing:-.01em;line-height:1.3;margin:1px 0 2px}'
+                + '.sub{color:var(--muted,var(--text-2,#49566d));font-size:13px}'
                 + '.x{flex:none;margin:-6px -6px 0 0;width:32px;height:32px;border:0;border-radius:var(--r-sm,8px);background:transparent;'
-                + 'color:var(--subtle,var(--text-3,#586379));cursor:pointer;display:grid;place-items:center}'
-                + '.x:hover{background:var(--surface-2,#f8f9fc);color:var(--ink,var(--text-1,#131c36))}'
-                + '.notes{margin:12px 0 0;padding:8px 12px;border-radius:var(--r-sm,8px);background:var(--surface-2,#f8f9fc);'
-                + 'color:var(--muted,var(--text-2,#4f5a73));font-size:13px;white-space:pre-line;max-height:96px;overflow:auto}'
+                + 'color:var(--subtle,var(--text-3,#556378));cursor:pointer;display:grid;place-items:center}'
+                + '.x:hover{background:var(--surface-2,#f6f9fb);color:var(--ink,var(--text-1,#111c3a))}'
+                + '.notes{margin:12px 0 0;padding:8px 12px;border-radius:var(--r-sm,8px);background:var(--surface-2,#f6f9fb);'
+                + 'color:var(--muted,var(--text-2,#49566d));font-size:13px;white-space:pre-line;max-height:96px;overflow:auto}'
                 + '.row{display:flex;gap:8px;justify-content:flex-end;margin-top:14px}'
-                + 'button.b{font:inherit;font-weight:600;font-size:14px;min-height:40px;padding:0 16px;border-radius:var(--r-md,10px);cursor:pointer;'
-                + 'border:1px solid transparent;display:inline-flex;align-items:center;gap:6px}'
-                + '.later{background:var(--surface,#fff);color:var(--ink,var(--text-1,#131c36));border-color:var(--line-strong,var(--border-strong,#cbd3e1))!important}'
-                + '.later:hover{background:var(--surface-2,#f8f9fc)}'
-                + '.dl{background:var(--accent,#1f63f5);color:var(--text-on-accent,#fff)}'
-                + '.dl:hover{background:var(--accent-hover,#1650d4)}'
-                + 'button:active{transform:scale(var(--press-scale,.97))}'
-                + 'button:focus-visible{outline:2px solid var(--focus-ring,#3478ff);outline-offset:2px}';
+                + 'button.b{font:inherit;font-weight:650;font-size:14px;min-height:40px;padding:0 16px;border-radius:var(--r-md,10px);cursor:pointer;'
+                + 'border:1px solid transparent;display:inline-flex;align-items:center;gap:6px;'
+                + 'transition:transform var(--dur-2,200ms) var(--ease-spring,cubic-bezier(.34,1.5,.64,1)),background-color var(--dur-1,110ms)}'
+                + '.later{background:var(--surface,#fff);color:var(--ink,var(--text-1,#111c3a));border-color:var(--line-strong,var(--border-strong,#c8d2dc))!important}'
+                + '.later:hover{background:var(--surface-2,#f6f9fb)}'
+                + '.dl{background:var(--accent,#00808b);color:var(--text-on-accent,#fff);box-shadow:inset 0 1px 0 rgb(255 255 255/.18)}'
+                + '.dl:hover{background:var(--accent-hover,#006a73)}'
+                + 'button:active{transform:scale(var(--press-scale,.96))}'
+                + 'button:focus-visible{outline:2px solid var(--focus-ring,#00808b);outline-offset:2px}';
             const arrow = '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" '
                 + 'stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11"/><path d="m7 10 5 5 5-5"/><path d="M5 20h14"/></svg>';
             const cross = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" '
@@ -216,7 +219,7 @@
         };
     }
 
-    // Internet uzilsa — sahifa tepasida kichik ogohlantirish (veb tokenlari: --warning-*, chap chetida hoshiya), qaytsa — yo'qoladi.
+    // Internet uzilsa — sahifa tepasida kichik ogohlantirish (veb tokenlari: --warning-*, belgi shafran doirada), qaytsa — yo'qoladi.
     // Aloqasiz F5 / Ctrl+R sahifani WebView'ning «sahifa ochilmadi» oynasiga almashtirib yubormasin.
     let offlineHost = null;
     function showOffline() {
@@ -227,17 +230,19 @@
         const root = offlineHost.attachShadow ? offlineHost.attachShadow({ mode: 'open' }) : offlineHost;
         const style = document.createElement('style');
         style.textContent = ':host{all:initial}'
-            + '.bar{position:relative;overflow:hidden;box-sizing:border-box;display:flex;gap:10px;align-items:center;padding:10px 14px 10px 18px;border-radius:var(--r-md,10px);'
-            + 'background:var(--warning-bg,#fffbeb);color:var(--warning-fg,#b45309);border:1px solid var(--warning-line,#fde68a);'
-            + 'box-shadow:var(--shadow-3,0 8px 24px -8px rgb(16 24 40/.25));font:600 13.5px/1.4 var(--font-sans,"Golos Text Variable",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif)}'
-            + '.bar:before{content:"";position:absolute;inset:0 auto 0 0;width:var(--hoshiya,4px);background:currentColor}';
+            + '.bar{position:relative;overflow:hidden;box-sizing:border-box;display:flex;gap:10px;align-items:center;padding:6px 16px 6px 6px;border-radius:999px;'
+            + 'background:var(--warning-bg,#fffbeb);color:var(--warning-fg,#bb4d00);border:1px solid var(--warning-line,#fee685);'
+            + 'box-shadow:var(--shadow-3,0 4px 10px rgb(17 28 58/.06),0 28px 56px -16px rgb(17 28 58/.32));'
+            + 'font:600 13.5px/1.4 var(--font-sans,"Onest Variable","Commissioner Variable",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif)}'
+            + '.ic{flex:none;width:28px;height:28px;border-radius:999px;display:grid;place-items:center;'
+            + 'background:var(--warning-solid,var(--k-shafran,#f2a93b));color:var(--k-shafran-ink,#2a1a00)}';
         const bar = document.createElement('div');
         bar.className = 'bar';
         bar.setAttribute('role', 'status');
-        bar.innerHTML = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" '
+        bar.innerHTML = '<span class="ic"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" '
             + 'aria-hidden="true"><path d="M2 2l20 20"/><path d="M8.5 16.5a5 5 0 0 1 7 0"/><path d="M5 12.86a10 10 0 0 1 5.17-2.69"/>'
-            + '<path d="M19 12.86a10 10 0 0 0-2.01-1.48"/><path d="M12 20h.01"/></svg><span></span>';
-        bar.querySelector('span').textContent = cfg.offline || 'Internet aloqasi yo\'q';
+            + '<path d="M19 12.86a10 10 0 0 0-2.01-1.48"/><path d="M12 20h.01"/></svg></span><span></span>';
+        bar.querySelector('span:last-child').textContent = cfg.offline || 'Internet aloqasi yo\'q';
         root.appendChild(style);
         root.appendChild(bar);
         document.body.appendChild(offlineHost);

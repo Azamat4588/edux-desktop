@@ -902,7 +902,8 @@ mod tests {
 
     #[test]
     fn ui_shriftlari_ilova_ichida_va_litsenziyasi_bilan() {
-        // 1.3.0: Golos Text + Literata (veb 1.40 dizayni) — internetsiz ham chiziladi; har shrift fayli va OFL matni bor.
+        // 1.4.0: Commissioner (sarlavha, raqam) + Onest (matn) — veb 1.41 «Koshin» dizayni; internetsiz ham chiziladi,
+        // har shrift fayli va OFL matni bor; 1.40 dagi Golos Text va Literata olib tashlangan.
         const CSS: &str = include_str!("../../ui/style.css");
         let fonts = std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("../ui/fonts");
         let mut n = 0;
@@ -912,16 +913,33 @@ mod tests {
             n += 1;
         }
         assert_eq!(n, 8);
-        assert!(fonts.join("OFL-golos-text.txt").is_file());
-        assert!(fonts.join("OFL-literata.txt").is_file());
-        assert!(!CSS.contains("Onest"));
+        assert!(fonts.join("OFL-commissioner.txt").is_file());
+        assert!(fonts.join("OFL-onest.txt").is_file());
+        assert!(!fonts.join("OFL-golos-text.txt").exists());
+        assert!(!fonts.join("OFL-literata.txt").exists());
+        assert!(!CSS.contains("Literata") && !CSS.contains("Golos"));
     }
 
     #[test]
-    fn yangilanish_xabari_v2_tokenlari_zaxira_bilan() {
-        // Yangi server — v2 tokenlari, eski server — eski nomlar, ular ham bo'lmasa — Klassik qiymatlari.
+    fn ui_koshin_dizayni_daftar_varagisiz() {
+        // 1.4.0: girih naqshi, koshin ranglari, Feruza; 1.40 dagi daftar varag'i, qizil hoshiya va ruchka chizig'i yo'q.
+        const CSS: &str = include_str!("../../ui/style.css");
+        const HTML: &str = include_str!("../../ui/index.html");
+        assert!(CSS.contains("--girih-line"));
+        assert!(CSS.contains("--k-shafran: #f2a93b"));
+        assert!(CSS.contains("--accent: #00808b"));
+        assert!(!CSS.contains("--hoshiya") && !CSS.contains("--margin:") && !CSS.contains("pen-line"));
+        assert!(HTML.contains("koshin-loader") && !HTML.contains("pen-line"));
+        assert!(HTML.contains("data-hue=\"anor\""));
+    }
+
+    #[test]
+    fn yangilanish_xabari_v3_tokenlari_zaxira_bilan() {
+        // Yangi server — v3 tokenlari, eski server — eski nomlar, ular ham bo'lmasa — Koshin/Feruza qiymatlari.
         assert!(INJECT.contains("var(--raised,var(--surface,#fff))"));
-        assert!(INJECT.contains("var(--ink,var(--text-1,#131c36))"));
-        assert!(INJECT.contains("width:var(--hoshiya,4px)"));
+        assert!(INJECT.contains("var(--ink,var(--text-1,#111c3a))"));
+        assert!(INJECT.contains("var(--accent,#00808b)"));
+        assert!(!INJECT.contains("width:var(--hoshiya"));
+        assert!(!INJECT.contains("Golos"));
     }
 }

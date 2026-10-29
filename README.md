@@ -55,15 +55,17 @@ Linux — WebKitGTK). O'rnatuvchi hajmi kichik (3–12 MB), alohida brauzer qo's
   **doimiy havolani** brauzerda ochadi: `<server>/download/windows|macos|linux` (Linux'da .deb dan o'rnatilgan bo'lsa —
   `/download/linux/deb`); server faylni o'zi beradi yoki GitHub relizga yo'naltiradi. Platforma yashirilgan, versiya
   kiritilmagan yoki endpoint yo'q (404) bo'lsa — hech narsa chiqmaydi.
-- **Dizayn** (1.3.0) — veb tizimning 1.40 «Daftar 2: hoshiya» dizayn tili: ilovaning o'z ekranlari (yuklanish /
-  birinchi ochilish, aloqa yo'q, server manzili) — daftar varag'i (nozik qatorlar, chap chetda qizil hoshiya chizig'i),
-  oq varaq-karta, diqqat kerak bo'lsa chap chetida holat rangidagi hoshiya (yuklanish — asosiy rang, aloqa yo'q — qizil,
-  internet yo'q — sariq, kengaytirilgan sozlama — sariq). Sarlavhalar **Literata**, matn **Golos Text** (lotin va kirill,
-  o'zbekcha ʻ bor) — ilova ichida, internetsiz ham (`ui/fonts`, OFL). Ranglar `docs/design.md` jadvalidan (Klassik,
-  Moviy; tungi rejim — «kechki daftar», kompyuter sozlamasiga qarab). Yuklanishda ko'k «ruchka chizig'i», harakatni
-  kamaytirish yoqilgan bo'lsa — harakatsiz. Yangilanish xabari va «Internet aloqasi yo'q» belgisi veb v2 tokenlaridan
-  (`--raised`, `--ink`, `--line`, `--hoshiya`; eski serverda eski nomlar, keyin Klassik qiymatlari) — tashkilot
-  shabloni, rangi va tungi rejimiga moslashadi. Ilova ikonkalari o'zgarmagan.
+- **Dizayn** (1.4.0) — veb tizimning 1.41 **«Koshin»** dizayni (v3; 1.3.0 dagi «Daftar» — daftar varag'i, qizil hoshiya,
+  ruchka chizig'i, Literata va Golos Text — butunlay olib tashlandi). Keng oynada chapda **«lojuvard tun» paneli**: oq
+  girih yulduzlari naqshi, katta sarlavha va tizimdan uch lahza — to'liq rangli **koshin plitkalar** (qarz — anor, test
+  natijasi — pista, dars — shafran), xuddi veb kirish sahifasidagidek; o'ngda — oq sir kanvasdagi karta. Holat belgisi
+  to'liq rangli plitka, muhr kabi bosiladi (aloqa yo'q — anor, internet yo'q — shafran); yuklanish belgisi — uch koshin
+  romb navbat bilan «nafas oladi». Sarlavha va raqamlar **Commissioner**, matn **Onest** (lotin va kirill; o'zbekcha ʻ —
+  Commissioner'dan) — ilova ichida, internetsiz ham (`ui/fonts`, OFL). Ranglar `docs/design.md` jadvalidan (Koshin,
+  Feruza; tungi rejim — «lojuvard tun», kompyuter sozlamasiga qarab). Harakatni kamaytirish yoqilgan bo'lsa — harakatsiz.
+  Yangilanish xabari va «Internet aloqasi yo'q» belgisi veb v3 tokenlaridan (`--raised`, `--ink`, `--accent`,
+  `--font-display`, `--warning-solid`; eski serverda eski nomlar, keyin Koshin/Feruza qiymatlari) — tashkilot shabloni,
+  rangi va tungi rejimiga moslashadi. Ilova ikonkalari o'zgarmagan.
 
 | Kunduzgi | Tungi |
 |---|---|
@@ -181,7 +183,7 @@ Belgilar (ikonka) `src-tauri/icons/source.png` dan (mobil ilova logotipi asosida
 
 ```
 ui/                     ilovaning o'z sahifasi: yuklanish, aloqa yo'q, kengaytirilgan server manzili (uz/ru/en)
-ui/fonts/               Golos Text va Literata shriftlari (OFL), ekranlar internetsiz ham to'g'ri chiziladi
+ui/fonts/               Commissioner va Onest shriftlari (OFL), ekranlar internetsiz ham to'g'ri chiziladi
 docs/screens/           README rasmlari (ilova ekranlari, kunduzgi/tungi)
 src-tauri/src/lib.rs    oyna, menyu, navigatsiya, yuklab olish, ruxsatlar, deep link, yangilanishlar
 src-tauri/src/inject.js veb ilova ichiga qo'shiladigan ko'prik (blob yuklab olish, print, Notification, window.open)

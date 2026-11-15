@@ -11,7 +11,8 @@
 <div class="layout">
   <!-- Keng oynada: «lojuvard tun» paneli — girih naqshi va tizimdan uch lahza (veb kirish sahifasi bilan bir xil) -->
   <aside class="panel" aria-hidden="true">
-    <div class="panel-brand"><img src="logo.png" alt="" width="40" height="40"><span>EduX</span></div>
+    <!-- 2.75: to'q panelda oq logotip plitkasi (veb public/brand/mark-white.svg) -->
+    <div class="panel-brand"><svg viewBox="0 0 48 48" width="40" height="40" aria-hidden="true"><rect width="48" height="48" rx="12" fill="#fff"/><g fill="#1f63f5"><rect x="13" y="12" width="6" height="24" rx="3"/><rect x="13" y="12" width="22" height="6" rx="3"/><rect x="13" y="30" width="22" height="6" rx="3"/><rect x="13" y="21" width="12" height="6" rx="3"/></g><circle cx="31" cy="24" r="4.25" fill="#ffc233"/></svg><span>EduX</span></div>
     <div>
       <p class="panel-title" data-t="panel_title"></p>
       <div class="moments">
@@ -108,6 +109,8 @@
           <select class="field-input" id="lang" name="lang">
             <option value="" data-t="lang_auto"></option>
             <option value="uz">O'zbekcha</option>
+            <option value="oz">Ўзбекча</option>
+            <option value="yl">Ózbekça</option>
             <option value="ru">Русский</option>
             <option value="en">English</option>
           </select>

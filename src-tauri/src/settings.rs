@@ -50,16 +50,22 @@ impl Settings {
 
     pub fn effective_lang(&self) -> String {
         match self.lang.as_deref() {
-            Some(l @ ("uz" | "ru" | "en")) => l.to_string(),
+            Some(l @ ("uz" | "ru" | "en" | "oz" | "yl")) => l.to_string(),
             _ => system_lang(),
         }
     }
 }
 
-/// Tizim tili: ru*/en*/uz*; boshqalari — o'zbekcha.
+/// Tizim tili: ru*/en*/uz*; boshqalari — o'zbekcha. 1.5.0: uz-Cyrl (kirill) — oz.
 pub fn system_lang() -> String {
-    let locale = sys_locale::get_locale().unwrap_or_default().to_lowercase();
-    if locale.starts_with("ru") {
+    lang_of_locale(&sys_locale::get_locale().unwrap_or_default())
+}
+
+fn lang_of_locale(locale: &str) -> String {
+    let locale = locale.to_lowercase().replace('_', "-");
+    if locale.starts_with("uz") && locale.contains("cyrl") {
+        "oz".into()
+    } else if locale.starts_with("ru") {
         "ru".into()
     } else if locale.starts_with("en") {
         "en".into()
@@ -153,6 +159,16 @@ pub fn same_site(url: &Url, server: &str) -> bool {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn tizim_tili_kirill_va_lotin() {
+        assert_eq!(lang_of_locale("uz-Cyrl-UZ"), "oz");
+        assert_eq!(lang_of_locale("uz_Cyrl"), "oz");
+        assert_eq!(lang_of_locale("uz-Latn-UZ"), "uz");
+        assert_eq!(lang_of_locale("ru-RU"), "ru");
+        assert_eq!(lang_of_locale("en-US"), "en");
+        assert_eq!(lang_of_locale("de-DE"), "uz");
+    }
 
     #[test]
     fn normalizes_addresses() {

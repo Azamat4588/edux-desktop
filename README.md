@@ -14,7 +14,9 @@ Linux — WebKitGTK). O'rnatuvchi hajmi kichik (3–12 MB), alohida brauzer qo's
 - **O'z serveri bo'lgan mijozlar uchun (kengaytirilgan):** menyu → **EduX → Kengaytirilgan → Server manzili…** —
   subdomen (`markaz` → `https://markaz.<asosiy server domeni>`), domen (`maktab.uz`) yoki IP (`192.168.1.10:8000`);
   saqlashdan oldin `GET <server>/api/v1/auth/options` bilan tekshiriladi. «Asosiy serverga qaytish» tugmasi bor.
-- **Til:** o'zbekcha / ruscha / inglizcha — kompyuter tiliga qarab, sozlamalarda qo'lda tanlash mumkin.
+- **Til:** o'zbekcha, **o'zbekcha kirill (Ўзбекча)**, **yangi lotin (Ózbekça)** (1.5.0, veb 2.74 dagi kabi), ruscha, inglizcha —
+  kompyuter tiliga qarab (Windows/macOS da «Ўзбекча (кирилл)» tanlangan bo'lsa — kirill), sozlamalarda qo'lda tanlash mumkin.
+  Til ilovaning o'z ekranlari, menyu va xabarlariga tegishli; tizim (veb) tili veb ichida o'z tanlovi bilan.
 - **Oyna** o'lchami va joyi eslab qolinadi; ilova **bitta nusxada** ishlaydi (qayta ochilsa, mavjud oyna oldinga chiqadi).
 - **Havolalar:** o'sha server ilova ichida; tashkilot subdomenlari — server o'zi aytgan asosiy domen bo'yicha
   (`GET <server>/api/v1/site` → `domain`; domen berilmagan serverda — faqat aynan shu manzil, `co.uz` kabi ommaviy
@@ -55,7 +57,11 @@ Linux — WebKitGTK). O'rnatuvchi hajmi kichik (3–12 MB), alohida brauzer qo's
   **doimiy havolani** brauzerda ochadi: `<server>/download/windows|macos|linux` (Linux'da .deb dan o'rnatilgan bo'lsa —
   `/download/linux/deb`); server faylni o'zi beradi yoki GitHub relizga yo'naltiradi. Platforma yashirilgan, versiya
   kiritilmagan yoki endpoint yo'q (404) bo'lsa — hech narsa chiqmaydi.
-- **Dizayn** (1.4.0) — veb tizimning 1.41 **«Koshin»** dizayni (v3; 1.3.0 dagi «Daftar» — daftar varag'i, qizil hoshiya,
+- **Dizayn** (1.5.0) — veb tizimning 2.75 **«Naqsh»** qobig'i: o'ng tomon deyarli oq varaq, yuqori o'ng burchagida asosiy
+  rangdagi girih naqshi (7%, tungi 10%, pastga qarab so'nadi); koshin plitkalar va holat belgisida sir chuqurligi (yuqori
+  chap burchakda yorug'lik) va rangli soya; asosiy tugmada yuqoridan yorug'lik; maydon va ikkinchi tugmada yumshoq chegara;
+  panel ro'yxatida shafran belgi doirasi va oq logotip plitkasi — veb kirish sahifasi bilan bir xil. Quyidagi 1.4.0 asosi saqlangan.
+- **Dizayn asosi** (1.4.0) — veb tizimning 1.41 **«Koshin»** dizayni (v3; 1.3.0 dagi «Daftar» — daftar varag'i, qizil hoshiya,
   ruchka chizig'i, Literata va Golos Text — butunlay olib tashlandi). Keng oynada chapda **«lojuvard tun» paneli**: oq
   girih yulduzlari naqshi, katta sarlavha va tizimdan uch lahza — to'liq rangli **koshin plitkalar** (qarz — anor, test
   natijasi — pista, dars — shafran), xuddi veb kirish sahifasidagidek; o'ngda — oq sir kanvasdagi karta. Holat belgisi
@@ -71,6 +77,7 @@ Linux — WebKitGTK). O'rnatuvchi hajmi kichik (3–12 MB), alohida brauzer qo's
 |---|---|
 | ![Server bilan aloqa yo'q — kunduzgi](docs/screens/aloqa-yoq.jpg) | ![Yuklanish va yangilanish xabari — tungi](docs/screens/yuklanish-tungi.jpg) |
 | ![Server manzili (kengaytirilgan)](docs/screens/server-manzili.jpg) | ![Internet aloqasi yo'q — tungi](docs/screens/internet-yoq-tungi.jpg) |
+| ![Kirill yozuvi (Ўзбекча)](docs/screens/kirill.jpg) | ![Yangi lotin, tor oyna](docs/screens/yangi-lotin-tor.jpg) |
 
 Rasmlar `ui/index.html` ni brauzerda (Playwright, Tauri IPC soxtasi bilan) ochib olingan.
 

@@ -695,7 +695,7 @@ fn save_settings(
         Some(s) if !s.trim().is_empty() => Some(settings::normalize_server(&s, None).map_err(|_| "invalid".to_string())?),
         _ => None,
     };
-    let lang = lang.filter(|l| matches!(l.as_str(), "uz" | "ru" | "en"));
+    let lang = lang.filter(|l| matches!(l.as_str(), "uz" | "ru" | "en" | "oz" | "yl"));
     let state = app.state::<AppState>();
     let reset = reset.unwrap_or(false);
     state.update(|s| {
@@ -931,6 +931,30 @@ mod tests {
         assert!(!CSS.contains("--hoshiya") && !CSS.contains("--margin:") && !CSS.contains("pen-line"));
         assert!(HTML.contains("koshin-loader") && !HTML.contains("pen-line"));
         assert!(HTML.contains("data-hue=\"anor\""));
+    }
+
+    #[test]
+    fn ui_naqsh_qobigi_va_yozuvlar() {
+        // 1.5.0: veb 2.75 «Naqsh» — varaqdagi girih naqshi, plitkalarda sir chuqurligi, tugmada yorug'lik, oq logotip
+        // plitkasi; til tanlovida o'zbekcha kirill (oz) va yangi lotin (yl), ikkala lug'at ham to'liq.
+        const CSS: &str = include_str!("../../ui/style.css");
+        const HTML: &str = include_str!("../../ui/index.html");
+        const JS: &str = include_str!("../../ui/app.js");
+        assert!(CSS.contains(".shell::before") && CSS.contains("--girih-opacity"));
+        assert!(CSS.contains("radial-gradient(120% 90% at 0% 0%"));
+        assert!(CSS.contains("linear-gradient(180deg, rgb(255 255 255 / 0.12)"));
+        assert!(CSS.contains("--check-circle"));
+        assert!(HTML.contains("<option value=\"oz\">Ўзбекча</option>") && HTML.contains("<option value=\"yl\">Ózbekça</option>"));
+        assert!(HTML.contains("class=\"panel-brand\"><svg"));
+        let keys = |lang: &str| -> usize {
+            let start = JS.find(&format!("        {lang}: {{\n")).expect(lang);
+            let body = &JS[start..];
+            let end = body.find("\n        },").unwrap();
+            body[..end].matches("\n            ").count()
+        };
+        assert_eq!(keys("oz"), keys("uz"));
+        assert_eq!(keys("yl"), keys("uz"));
+        assert!(JS.contains("uz-Cyrl"));
     }
 
     #[test]

@@ -14,7 +14,7 @@ Linux — WebKitGTK). O'rnatuvchi hajmi kichik (3–12 MB), alohida brauzer qo's
 - **O'z serveri bo'lgan mijozlar uchun (kengaytirilgan):** menyu → **EduX → Kengaytirilgan → Server manzili…** —
   subdomen (`markaz` → `https://markaz.<asosiy server domeni>`), domen (`maktab.uz`) yoki IP (`192.168.1.10:8000`);
   saqlashdan oldin `GET <server>/api/v1/auth/options` bilan tekshiriladi. «Asosiy serverga qaytish» tugmasi bor.
-- **Til:** o'zbekcha, **o'zbekcha kirill (Ўзбекча)**, **yangi lotin (Ózbekça)** (1.5.0, veb 2.74 dagi kabi), ruscha, inglizcha —
+- **Til:** o'zbekcha, **o'zbekcha kirill (Ўзбекча)**, **yangi lotin (Özbekça)** (1.5.0, veb 2.74 dagi kabi), ruscha, inglizcha —
   kompyuter tiliga qarab (Windows/macOS da «Ўзбекча (кирилл)» tanlangan bo'lsa — kirill), sozlamalarda qo'lda tanlash mumkin.
   Til ilovaning o'z ekranlari, menyu va xabarlariga tegishli; tizim (veb) tili veb ichida o'z tanlovi bilan.
 - **Oyna** o'lchami va joyi eslab qolinadi; ilova **bitta nusxada** ishlaydi (qayta ochilsa, mavjud oyna oldinga chiqadi).

@@ -944,7 +944,7 @@ mod tests {
         assert!(CSS.contains("radial-gradient(120% 90% at 0% 0%"));
         assert!(CSS.contains("linear-gradient(180deg, rgb(255 255 255 / 0.12)"));
         assert!(CSS.contains("--check-circle"));
-        assert!(HTML.contains("<option value=\"oz\">Ўзбекча</option>") && HTML.contains("<option value=\"yl\">Ózbekça</option>"));
+        assert!(HTML.contains("<option value=\"oz\">Ўзбекча</option>") && HTML.contains("<option value=\"yl\">Özbekça</option>"));
         assert!(HTML.contains("class=\"panel-brand\"><svg"));
         let keys = |lang: &str| -> usize {
             let start = JS.find(&format!("        {lang}: {{\n")).expect(lang);

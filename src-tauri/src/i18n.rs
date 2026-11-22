@@ -77,19 +77,19 @@ fn script(lang: &str, key: &str) -> Option<&'static str> {
         "edit.redo" => ("Қайтариш", "Qaytariş"),
         "edit.cut" => ("Кесиб олиш", "Kesib oliş"),
         "edit.copy" => ("Нусха олиш", "Nusxa oliş"),
-        "edit.paste" => ("Қўйиш", "Qóyiş"),
+        "edit.paste" => ("Қўйиш", "Qöyiş"),
         "edit.select_all" => ("Ҳаммасини белгилаш", "Hammasini belgilaş"),
-        "menu.view" => ("Кўриниш", "Kóriniş"),
+        "menu.view" => ("Кўриниш", "Köriniş"),
         "menu.reload" => ("Қайта юклаш", "Qayta yuklaş"),
         "menu.back" => ("Орқага", "Orqaga"),
         "menu.forward" => ("Олдинга", "Oldinga"),
         "menu.zoom_in" => ("Катталаштириш", "Kattalaştiriş"),
         "menu.zoom_out" => ("Кичиклаштириш", "Kiçiklaştiriş"),
-        "menu.zoom_reset" => ("Асл ўлчам", "Asl ólçam"),
-        "menu.fullscreen" => ("Тўлиқ экран", "Tóliq ekran"),
+        "menu.zoom_reset" => ("Асл ўлчам", "Asl ölçam"),
+        "menu.fullscreen" => ("Тўлиқ экран", "Töliq ekran"),
         "menu.help" => ("Ёрдам", "Yordam"),
         "menu.help_center" => ("Ёрдам маркази", "Yordam markazi"),
-        "menu.faq" => ("Кўп бериладиган саволлар", "Kóp beriladigan savollar"),
+        "menu.faq" => ("Кўп бериладиган саволлар", "Köp beriladigan savollar"),
         "menu.support" => ("Мурожаат юбориш", "Murojaat yuboriş"),
         "menu.updates" => ("Янгиланишни текшириш", "Yangilanişni tekşiriş"),
         "about.title" => ("EduX ҳақида", "EduX haqida"),
@@ -99,14 +99,14 @@ fn script(lang: &str, key: &str) -> Option<&'static str> {
         "about.unknown" => ("номаълум", "nomaʼlum"),
         "update.title" => ("Янги версия мавжуд", "Yangi versiya mavjud"),
         "update.download" => ("Юклаб олиш", "Yuklab oliş"),
-        "update.text" => ("EduX {new} чиқди, сизда {current}. Юклаб олиб ўрнатинг — созламалар сақланиб қолади.", "EduX {new} çiqdi, sizda {current}. Yuklab olib órnating — sozlamalar saqlanib qoladi."),
+        "update.text" => ("EduX {new} чиқди, сизда {current}. Юклаб олиб ўрнатинг — созламалар сақланиб қолади.", "EduX {new} çiqdi, sizda {current}. Yuklab olib örnating — sozlamalar saqlanib qoladi."),
         "update.later" => ("Кейинроқ", "Keyinroq"),
         "update.close" => ("Ёпиш", "Yopiş"),
-        "update.none" => ("Сизда энг сўнгги версия ўрнатилган.", "Sizda eng sónggi versiya órnatilgan."),
-        "offline.text" => ("Интернет алоқаси йўқ. Саҳифа очиқ қолади — алоқа тикланиши билан иш давом этади.", "Internet aloqasi yóq. Sahifa oçiq qoladi — aloqa tiklanişi bilan iş davom etadi."),
+        "update.none" => ("Сизда энг сўнгги версия ўрнатилган.", "Sizda eng sönggi versiya örnatilgan."),
+        "offline.text" => ("Интернет алоқаси йўқ. Саҳифа очиқ қолади — алоқа тикланиши билан иш давом этади.", "Internet aloqasi yöq. Sahifa oçiq qoladi — aloqa tiklanişi bilan iş davom etadi."),
         "save.title" => ("Файлни сақлаш", "Faylni saqlaş"),
         "save.done" => ("Файл сақланди", "Fayl saqlandi"),
-        "save.failed" => ("Файлни сақлаб бўлмади", "Faylni saqlab bólmadi"),
+        "save.failed" => ("Файлни сақлаб бўлмади", "Faylni saqlab bölmadi"),
         _ => return None,
     };
     Some(if lang == "oz" { oz } else { yl })
@@ -144,7 +144,7 @@ mod tests {
         assert_eq!(t("oz", "menu.help"), "Ёрдам");
         assert_eq!(t("oz", "menu.quit"), "Чиқиш");
         assert_eq!(t("yl", "menu.quit"), "Çiqiş");
-        assert_eq!(t("yl", "menu.view"), "Kóriniş");
+        assert_eq!(t("yl", "menu.view"), "Köriniş");
         assert_eq!(t("oz", "menu.about"), "EduX ҳақида");
         assert!(t("oz", "update.text").contains("{new}") && t("yl", "update.text").contains("{current}"));
         for key in ["menu.edit", "menu.reload", "offline.text", "save.failed", "update.later"] {
